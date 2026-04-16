@@ -8,7 +8,7 @@ interface Props {
 
 const TabelaDeProdutos = ({ produtos }: Props) => {
   return (
-    <div className="">
+    <div className="overflow-x-auto">
       <table className="w-full border-2 border-gray-400">
         <thead>
           <tr className="border-2 border-gray-400 bg-gray-300">

@@ -1,11 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Layout from "./Layout";
+import CadastrarProdutoPage from "../pages/CadastrarProdutoPage";
 import CarrinhoPage from "../pages/CarrinhoPage";
 import FavoritosPage from "../pages/FavoritosPage";
 import HomePage from "../pages/HomePage";
-import ListarProdutosPage from "../pages/ListarProdutosPage";
-import CadastrarProdutoPage from "../pages/CadastrarProdutoPage";
 import LoginPage from "../pages/LoginPage";
+import ProdutosPage from "../pages/ProdutosPage";
+import Layout from "./Layout";
 
 const router = createBrowserRouter([
     {
@@ -22,11 +22,11 @@ const router = createBrowserRouter([
             {path: "home", element: <HomePage />},
             {path: "carrinho", element: <CarrinhoPage />},
             {path: "favoritos", element: <FavoritosPage />},
-            {path: "listar-produtos", element: <ListarProdutosPage />},
+            {path: "listar-produtos", element: <ProdutosPage />},
             {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
             // A página de erro já faz isso
-            {path: "*", element: <h5 className="text-xl text-center mt-3">404 - Página não encontrada</h5>}
+            // {path: "*", element: <h5 className="text-xl text-center mt-3">404 - Página não encontrada</h5>}
         ]
     }
 ])
