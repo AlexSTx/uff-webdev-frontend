@@ -6,11 +6,13 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ProdutosPage from "../pages/ProdutosPage";
 import Layout from "./Layout";
+import ErrorPage from "../pages/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Layout />,
+        errorElement: <ErrorPage />,
         children: [
             // A linha abaixo define a rota “índice” (a rota padrão) dentro do grupo de rotas
             // filhas do caminho /. Ou seja, quando o usuário acessa exatamente /, ela redireciona 
