@@ -18,27 +18,33 @@ const NavBar = () => {
       <div className="mx-3 md:mx-10 lg:mx-20">
         <div className="flex justify-between">
           <div className="flex items-center space-x-4">
-            <NavLink to="/">
+            <NavLink to="/" onClick={() => setIsOpen(false)}>
               <img src={hortifruti} width="45px" />
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black hidden md:block"
+              className="hidden text-gray-700 hover:text-black md:block"
               aria-current="page"
               to="/"
             >
               <i className="bi bi-house me-1"></i>
               Home
             </NavLink>
-            <NavLink className="text-gray-700 hover:text-black hidden md:block" to="/carrinho">
+            <NavLink
+              className="hidden text-gray-700 hover:text-black md:block"
+              to="/carrinho"
+            >
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
             </NavLink>
-            <NavLink className="text-gray-700 hover:text-black hidden md:block" to="/favoritos">
+            <NavLink
+              className="hidden text-gray-700 hover:text-black md:block"
+              to="/favoritos"
+            >
               <i className="bi bi-heart me-1"></i>
               Favoritos
             </NavLink>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             <NavLink
               className="text-gray-700 hover:text-black"
               to="/listar-produtos"
@@ -58,7 +64,7 @@ const NavBar = () => {
               Entrar
             </NavLink>
           </div>
-          
+
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={
@@ -82,8 +88,60 @@ const NavBar = () => {
               ></path>
             </svg>
           </button>
-
         </div>
+        {isOpen && (
+          <div className="mt-4 flex flex-col space-y-2 md:hidden">
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              aria-current="page"
+              to="/"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-house me-1"></i>
+              Home
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/carrinho"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-cart3 me-1"></i>
+              Carrinho
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/favoritos"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-heart me-1"></i>
+              Favoritos
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/listar-produtos"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-card-list me-1"></i>
+              Listar Produtos
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/cadastrar-produto"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-database-add me-1"></i>
+              Cad. Produto
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/login"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-box-arrow-in-right me-1"></i>
+              Entrar
+            </NavLink>
+          </div>
+        )}
       </div>
     </nav>
   );
