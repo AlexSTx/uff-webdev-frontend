@@ -1,13 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import CadastrarProdutoPage from "../pages/CadastrarProdutoPage";
 import CarrinhoPage from "../pages/CarrinhoPage";
+import ErrorPage from "../pages/ErrorPage";
 import FavoritosPage from "../pages/FavoritosPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
-import ProdutosPage from "../pages/ProdutosPage";
-import Layout from "./Layout";
-import ErrorPage from "../pages/ErrorPage";
 import ProdutoPage from "../pages/ProdutoPage";
+import ProdutosComPaginacaoPage from "../pages/ProdutosComPaginacaoPage";
+import Layout from "./Layout";
 
 const router = createBrowserRouter([
     {
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
             {path: "home", element: <HomePage />},
             {path: "carrinho", element: <CarrinhoPage />},
             {path: "favoritos", element: <FavoritosPage />},
-            {path: "listar-produtos", element: <ProdutosPage />},
+            {path: "listar-produtos", element: <ProdutosComPaginacaoPage />},
             {path: "produtos/:id", element: <ProdutoPage />},
             {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
