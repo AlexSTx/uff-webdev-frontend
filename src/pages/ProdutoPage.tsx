@@ -34,14 +34,14 @@ const ProdutoPage = () => {
         </div>
         <div className="col-span-12 lg:col-span-8 xl:col-span-9 mb-2">
           <div className="grid grid-cols-12">
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Categoria</div>
-            <div className="col-span-8 xl:con-span-9">{produto.categoria.nome}</div>
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Categoria</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">{produto.categoria.nome}</div>
 
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Nome</div>
-            <div className="col-span-8 xl:con-span-9">{produto.nome} ({produto.descricao})</div>
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Nome</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">{produto.nome} ({produto.descricao})</div>
 
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Preço</div>
-            <div className="col-span-8 xl:con-span-9">
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Preço</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">
                 {produto.preco.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -49,14 +49,14 @@ const ProdutoPage = () => {
               })}
             </div>
 
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Estoque</div>
-            <div className="col-span-8 xl:con-span-9">{produto.qtdEstoque}</div>
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Estoque</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">{produto.qtdEstoque}</div>
 
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Data Cadastro</div>
-            <div className="col-span-8 xl:con-span-9">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</div>
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Data Cadastro</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</div>
             
-            <div className="col-span-4 xl:col-span-3 font-bold mb-1">Disponível</div>
-            <div className="col-span-8 xl:con-span-9">{produto.disponivel ? "Sim" : "Não"}</div>
+            <div className="col-span-4 lg:col-span-3 xl:col-span-2 font-bold mb-1">Disponível</div>
+            <div className="col-span-8 lg:col-span-9 xl:col-span-10">{produto.disponivel ? "Sim" : "Não"}</div>
 
           </div>
         </div>
