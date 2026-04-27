@@ -7,6 +7,7 @@ import LoginPage from "../pages/LoginPage";
 import ProdutosPage from "../pages/ProdutosPage";
 import Layout from "./Layout";
 import ErrorPage from "../pages/ErrorPage";
+import ProdutoPage from "../pages/ProdutoPage";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
             {path: "carrinho", element: <CarrinhoPage />},
             {path: "favoritos", element: <FavoritosPage />},
             {path: "listar-produtos", element: <ProdutosPage />},
+            {path: "produtos/:id", element: <ProdutoPage />},
             {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
             // A página de erro já faz isso

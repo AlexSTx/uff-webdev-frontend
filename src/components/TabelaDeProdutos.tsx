@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import type { Produto } from "../interfaces/Produto";
 import databaseDelete from '../assets/skin/database_delete.png';
+import { Link } from "react-router-dom";
 
 interface Props {
   produtos: Produto[];
@@ -32,7 +33,9 @@ const TabelaDeProdutos = ({ produtos }: Props) => {
                 </div>
               </td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.categoria.nome}</td>
-              <td className="border-r border-r-gray-200 ps-2 py-1 w-[20%]">{produto.nome}</td>
+              <td className="border-r border-r-gray-200 ps-2 py-1 w-[20%]">
+                <Link className="font-bold text-green-700" to={"/produtos/" + produto.id}>{produto.nome}</Link> 
+              </td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.disponivel ? "Sim" : "Não"}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</td>
               <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco.toLocaleString("pt-BR", {
