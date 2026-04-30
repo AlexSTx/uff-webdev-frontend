@@ -1,7 +1,7 @@
 interface Props {
-    pagina: number,
-    totalDePaginas: number,
-    tratarPaginacao: (pagina: number) => void
+    pagina: number;
+    totalDePaginas: number;
+    tratarPaginacao: (pagina: number) => void;
 }
 
 const Paginacao = ({pagina, totalDePaginas, tratarPaginacao}: Props) => {

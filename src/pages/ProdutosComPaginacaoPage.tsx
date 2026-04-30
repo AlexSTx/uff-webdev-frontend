@@ -27,8 +27,7 @@ const ProdutosComPaginacaoPage = () => {
   });
 
   if (errorRecuperarProdutos) throw errorRecuperarProdutos;
-  if (recuperandoProdutos)
-    return <p className="text-lg">Recuperando produtos...</p>;
+  if (recuperandoProdutos) return <p className="text-lg">Recuperando produtos...</p>;
 
   const totalDePaginas = resultadoPaginado.totalDePaginas;
   const produtos = resultadoPaginado.itens;
