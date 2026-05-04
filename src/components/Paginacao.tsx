@@ -5,6 +5,8 @@ interface Props {
 }
 
 const Paginacao = ({pagina, totalDePaginas, tratarPaginacao}: Props) => {
+  
+  if (totalDePaginas < 2) return;
 
   const pages = Array.from({length: totalDePaginas}).map((_, index) => index);  
 

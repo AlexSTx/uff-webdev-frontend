@@ -2,13 +2,19 @@ import { useState } from "react";
 import TabelaDeProdutos from "../components/TabelaDeProdutos";
 import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
 import Paginacao from "../components/Paginacao";
+import Pesquisa from "../components/Pesquisa";
 
 const ProdutosComPaginacaoPage = () => {
   const [pagina, setPagina] = useState(0);
+  const [nome, setNome] = useState("");
   const tamanho = 3;
 
   const tratarPaginacao = (pagina: number) => {
     setPagina(pagina);
+  };
+
+  const tratarPesquisa = (nome: string) => {
+    setNome(nome);
   };
 
   // isPending fica true quando não há dados ainda (primeira carga da query).
@@ -24,6 +30,7 @@ const ProdutosComPaginacaoPage = () => {
   } = useRecuperarProdutosComPaginacao({
     pagina: pagina.toString(),
     tamanho: tamanho.toString(),
+    nome: nome
   });
 
   if (errorRecuperarProdutos) throw errorRecuperarProdutos;
@@ -36,6 +43,8 @@ const ProdutosComPaginacaoPage = () => {
     <>
       <h1 className="mb-1 text-xl font-semibold">Lista de Produtos</h1>
       <hr className="mb-4" />
+
+      <Pesquisa tratarPesquisa={tratarPesquisa} />
       <TabelaDeProdutos produtos={produtos} />
       <div className="flex">
         <div className="flex flex-col items-center gap-2  ">

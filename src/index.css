@@ -7,3 +7,7 @@
 .btn-success { 
     @apply rounded-lg bg-green-700 text-white hover:bg-green-800 not-disabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50;
 }
+
+.input {
+    @apply w-full rounded-lg border-2 border-gray-400 p-1 text-base outline-none focus:border-gray-800;
+}
