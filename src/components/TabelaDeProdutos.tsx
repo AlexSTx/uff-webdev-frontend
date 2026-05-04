@@ -5,9 +5,10 @@ import { Link } from "react-router-dom";
 
 interface Props {
   produtos: Produto[];
+  tratarRemocao: (id: number) => void;
 }
 
-const TabelaDeProdutos = ({ produtos }: Props) => {
+const TabelaDeProdutos = ({ produtos, tratarRemocao }: Props) => {
   return (
     <div className="overflow-x-auto mb-3">
       <table className="w-full border-2 border-gray-400">
@@ -44,7 +45,7 @@ const TabelaDeProdutos = ({ produtos }: Props) => {
                 useGrouping: true
               })}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
-                <button className="btn-danger px-4 py-1" type="button">
+                <button onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                     <img className="me-1" src={databaseDelete} />
                     Remover
