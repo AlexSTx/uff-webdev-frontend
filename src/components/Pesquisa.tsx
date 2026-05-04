@@ -3,8 +3,14 @@ interface Props {
     tratarPesquisa: (nome: string) => void;
 }
 const Pesquisa = ({tratarPesquisa}: Props) => {
+  let timeout: number = 0;
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    tratarPesquisa(event.target.value);
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        tratarPesquisa(event.target.value);
+    }, 1000);
+    console.log(timeout);
   }
   
   return (
