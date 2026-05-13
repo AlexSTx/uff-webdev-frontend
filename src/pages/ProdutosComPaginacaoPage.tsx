@@ -4,6 +4,7 @@ import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPa
 import Paginacao from "../components/Paginacao";
 import Pesquisa from "../components/Pesquisa";
 import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../main";
 
 const ProdutosComPaginacaoPage = () => {
   const [pagina, setPagina] = useState(0);
@@ -24,7 +25,7 @@ const ProdutosComPaginacaoPage = () => {
   }
 
   const removerProdutoPorId = async (id: number) => {
-    const response = await fetch("http://localhost:8080/produto/" + id, {
+    const response = await fetch("http://localhost:8080/produtos/" + id, {
       method: "DELETE"
     });
     if (!response.ok) {
@@ -37,7 +38,14 @@ const ProdutosComPaginacaoPage = () => {
     error: errorRemoverProduto
   } = useMutation({
     mutationFn: (id: number) => removerProdutoPorId(id),
-
+    onSuccess: () => {  // Após a remoção de um produto com sucesso a chave "produtos" é 
+      // invalidada o que provoca a reexibição desta página. Com essa reexibição a busca
+      // abaixo (useRecuperarProdutosComPaginacao) será reexecutada e o produto removido
+      // irá desaparecer.
+      queryClient.invalidateQueries({
+        queryKey: ["produtos"]  // invalidando o cache para a chave "produtos"
+      })
+    }
   })
   // isPending fica true quando não há dados ainda (primeira carga da query).
   
