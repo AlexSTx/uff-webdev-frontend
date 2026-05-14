@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 interface Props {
   produtos: Produto[];
   tratarRemocao: (id: number) => void;
-  idRemovendo: number | null;
+  // idRemovendo só é utilizado por ProdutosComPaginacaoPage. Isto é,
+  // não é utilizado por ProdutosPage, dái ser opcional. Veja a ? abaixo.
+  idRemovendo?: number | null;
 }
 
 const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo   }: Props) => {

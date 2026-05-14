@@ -47,10 +47,17 @@ const NavBar = () => {
           <div className="hidden items-center space-x-4 md:flex">
             <NavLink
               className="text-gray-700 hover:text-black"
-              to="/listar-produtos"
+              to="/produtos-sem-paginacao"
             >
               <i className="bi bi-card-list me-1"></i>
-              Listar Produtos
+              Produtos sem Paginação
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/produtos-com-paginacao"
+            >
+              <i className="bi bi-card-list me-1"></i>
+              Produtos com Paginação
             </NavLink>
             <NavLink
               className="text-gray-700 hover:text-black"
@@ -118,11 +125,19 @@ const NavBar = () => {
             </NavLink>
             <NavLink
               className="text-gray-700 hover:text-black"
-              to="/listar-produtos"
+              to="/produtos-sem-paginacao"
               onClick={() => setIsOpen(false)}
             >
               <i className="bi bi-card-list me-1"></i>
-              Listar Produtos
+              Produtos sem Paginação
+            </NavLink>
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/produtos-com-paginacao"
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="bi bi-card-list me-1"></i>
+              Produtos com Paginação
             </NavLink>
             <NavLink
               className="text-gray-700 hover:text-black"

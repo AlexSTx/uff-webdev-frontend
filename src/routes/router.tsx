@@ -8,6 +8,7 @@ import LoginPage from "../pages/LoginPage";
 import ProdutoPage from "../pages/ProdutoPage";
 import ProdutosComPaginacaoPage from "../pages/ProdutosComPaginacaoPage";
 import Layout from "./Layout";
+import ProdutosPage from "../pages/ProdutosPage";
 
 const router = createBrowserRouter([
     {
@@ -25,7 +26,8 @@ const router = createBrowserRouter([
             {path: "home", element: <HomePage />},
             {path: "carrinho", element: <CarrinhoPage />},
             {path: "favoritos", element: <FavoritosPage />},
-            {path: "listar-produtos", element: <ProdutosComPaginacaoPage />},
+            {path: "produtos-sem-paginacao", element: <ProdutosPage />},
+            {path: "produtos-com-paginacao", element: <ProdutosComPaginacaoPage />},
             {path: "produtos/:id", element: <ProdutoPage />},
             {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
