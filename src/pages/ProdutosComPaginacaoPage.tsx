@@ -1,13 +1,13 @@
 import { useState } from "react";
-import TabelaDeProdutos from "../components/TabelaDeProdutos";
-import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
 import Paginacao from "../components/Paginacao";
 import Pesquisa from "../components/Pesquisa";
-import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../main";
+import TabelaDeProdutos from "../components/TabelaDeProdutos";
+import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
+import useRemoverProduto from "../hooks/useRemoverProduto";
 
 const ProdutosComPaginacaoPage = () => {
   const [pagina, setPagina] = useState(0);
+  const [idRemovendo, setIdRemovendo] = useState<number | null>(null);
   const [nome, setNome] = useState("");
   const tamanho = 3;
 
@@ -20,33 +20,19 @@ const ProdutosComPaginacaoPage = () => {
   };
 
   const tratarRemocao = (id: number) => {
-    removerProduto(id);
+    removerProduto(id, {
+      // a função definda em onSettled é executada após a função 
+      // onSuccess. Ela resseta o valor de idRemovendo para null
+      onSettled: () => setIdRemovendo(null)
+    });
+    setIdRemovendo(id);
     setPagina(0);
   }
 
-  const removerProdutoPorId = async (id: number) => {
-    const response = await fetch("http://localhost:8080/produtos/" + id, {
-      method: "DELETE"
-    });
-    if (!response.ok) {
-      throw new Error ("Ocorreu um erro ao remover produto. Status code: " + response.status);
-    }
-    // return await response.json() - Não retorna nada uma vez que o back-end retorna void
-  }
   const {
     mutate: removerProduto,
-    error: errorRemoverProduto
-  } = useMutation({
-    mutationFn: (id: number) => removerProdutoPorId(id),
-    onSuccess: () => {  // Após a remoção de um produto com sucesso a chave "produtos" é 
-      // invalidada o que provoca a reexibição desta página. Com essa reexibição a busca
-      // abaixo (useRecuperarProdutosComPaginacao) será reexecutada e o produto removido
-      // irá desaparecer.
-      queryClient.invalidateQueries({
-        queryKey: ["produtos"]  // invalidando o cache para a chave "produtos"
-      })
-    }
-  })
+    error: errorRemoverProduto } = useRemoverProduto();
+
   // isPending fica true quando não há dados ainda (primeira carga da query).
   
   // isFetching fica true sempre que há uma busca em andamento, inclusive na primeira carga 
@@ -76,7 +62,7 @@ const ProdutosComPaginacaoPage = () => {
       <hr className="mb-4" />
 
       <Pesquisa tratarPesquisa={tratarPesquisa} />
-      <TabelaDeProdutos produtos={produtos} tratarRemocao={tratarRemocao} />
+      <TabelaDeProdutos produtos={produtos} tratarRemocao={tratarRemocao} idRemovendo={idRemovendo} />
       <div className="flex">
         <div className="flex flex-col items-center gap-2  ">
           <Paginacao
@@ -84,7 +70,11 @@ const ProdutosComPaginacaoPage = () => {
             totalDePaginas={totalDePaginas}
             tratarPaginacao={tratarPaginacao}
           />
-          {atualizandoProdutos && (
+          {/* O string "Atualizando..." só aparece se estivermos paginando os dados, isto é, 
+          não irá aparecer se estivermos removendo um produto. Quando estamos removendo um 
+          produto idRemovendo estará valendo o id do produto que está sendo removido. 
+          E quando estivermos paginando idRemovendo estará valendo null */}
+          {atualizandoProdutos && idRemovendo === null && (
             <span className="text-sm text-green-700">Atualizando...</span>
           )}
         </div>

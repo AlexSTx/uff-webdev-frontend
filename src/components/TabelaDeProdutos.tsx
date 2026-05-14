@@ -6,9 +6,10 @@ import { Link } from "react-router-dom";
 interface Props {
   produtos: Produto[];
   tratarRemocao: (id: number) => void;
+  idRemovendo: number | null;
 }
 
-const TabelaDeProdutos = ({ produtos, tratarRemocao }: Props) => {
+const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo   }: Props) => {
   return (
     <div className="overflow-x-auto mb-3">
       <table className="w-full border-2 border-gray-400">
@@ -47,9 +48,16 @@ const TabelaDeProdutos = ({ produtos, tratarRemocao }: Props) => {
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
                 <button onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
-                    <img className="me-1" src={databaseDelete} />
-                    Remover
-                  </div>
+                    {idRemovendo === produto.id ? 
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent me-2" />
+                      Removendo...
+                    </> : 
+                    <>
+                      <img className="me-1" src={databaseDelete} />
+                      Remover
+                    </>}
+                   </div>
                 </button>
               </td>
             </tr>
