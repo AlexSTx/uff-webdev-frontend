@@ -16,10 +16,11 @@ const recuperarProdutoPorId = async (id: number) => {
   return await response.json();
 };
 
-const useRecuperarProdutoPorId = (id: number) => {
+const useRecuperarProdutoPorId = (id: number, removido: boolean = false) => {
   return useQuery({
     queryKey: ["produtos", id],
     queryFn: () => recuperarProdutoPorId(id),
+    enabled: !removido
     // staleTime: 10_000,
   });
 };
