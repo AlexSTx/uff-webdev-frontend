@@ -14,6 +14,7 @@ const ProdutosPage = () => {
   };
 
   const { mutate: removerProduto,
+          isPending: removendoProduto
        // error: errorRemoverProduto  <== Isso não pode existir com remoção otimista
        // caso contrário a página de erro será exibida. Veja abaixo.
   } = useRemoverProdutoOtimista();
@@ -30,7 +31,7 @@ const ProdutosPage = () => {
     <>
       <h1 className="mb-1 text-xl font-semibold">Lista de Produtos</h1>
       <hr className="mb-4" />
-      <TabelaDeProdutos produtos={produtos} tratarRemocao={tratarRemocao}/>
+      <TabelaDeProdutos produtos={produtos} tratarRemocao={tratarRemocao} removendoProduto={removendoProduto} />
     </>
   );
 };

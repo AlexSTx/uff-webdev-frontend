@@ -9,9 +9,14 @@ interface Props {
   // idRemovendo só é utilizado por ProdutosComPaginacaoPage. Isto é,
   // não é utilizado por ProdutosPage, dái ser opcional. Veja a ? abaixo.
   idRemovendo?: number | null;
+  
+  // removendoProduto só é utilizado por ProdutosPage. Isto é, não é utilizado por 
+  // ProdutosComPaginacaoPage, daí ser opcional. Em TypeScript (e no JS com tipagem), 
+  // não é permitido ter parâmetro obrigatório depois de um opcional. 
+  removendoProduto?: boolean;
 }
 
-const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo   }: Props) => {
+const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo, removendoProduto }: Props) => {
   return (
     <div className="overflow-x-auto mb-3">
       <table className="w-full border-2 border-gray-400">
@@ -48,7 +53,7 @@ const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo   }: Props) => 
                 useGrouping: true
               })}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
-                <button onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
+                <button disabled={removendoProduto} onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                     {idRemovendo === produto.id ? 
                     <>
