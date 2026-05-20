@@ -1,4 +1,4 @@
-import TabelaDeProdutos from "../components/TabelaDeProdutos";
+import TabelaDeProdutosOtimista from "../components/TabelaDeProdutosOtimista";
 import useRecuperarProdutos from "../hooks/useRecuperarProdutos";
 import useRemoverProdutoOtimista from "../hooks/useRemoverProdutoOtimista";
 
@@ -31,7 +31,7 @@ const ProdutosPage = () => {
     <>
       <h1 className="mb-1 text-xl font-semibold">Lista de Produtos</h1>
       <hr className="mb-4" />
-      <TabelaDeProdutos produtos={produtos} tratarRemocao={tratarRemocao} removendoProduto={removendoProduto} />
+      <TabelaDeProdutosOtimista produtos={produtos} tratarRemocao={tratarRemocao} removendoProduto={removendoProduto} />
     </>
   );
 };

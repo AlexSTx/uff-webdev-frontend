@@ -16,7 +16,7 @@ interface Props {
   removendoProduto?: boolean;
 }
 
-const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo, removendoProduto }: Props) => {
+const TabelaDeProdutosOtimista = ({ produtos, tratarRemocao, idRemovendo, removendoProduto }: Props) => {
   return (
     <div className="overflow-x-auto mb-3">
       <table className="w-full border-2 border-gray-400">
@@ -74,4 +74,4 @@ const TabelaDeProdutos = ({ produtos, tratarRemocao, idRemovendo, removendoProdu
     </div>
   );
 };
-export default TabelaDeProdutos;
+export default TabelaDeProdutosOtimista;
