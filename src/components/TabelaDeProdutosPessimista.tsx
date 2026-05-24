@@ -15,9 +15,13 @@ const TabelaDeProdutosPessimista = () => {
   const setIdRemovendo = useProdutoStore((s) => s.setIdRemovendo);
   
   const tratarRemocao = (id: number) => {
-    removerProduto(id);
+    removerProduto(id, {
+      onSettled: () => {
+        setIdRemovendo(null);
+        setPagina(0);
+      }
+    });
     setIdRemovendo(id);
-    setPagina(0);
   }
 
   const {

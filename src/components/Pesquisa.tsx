@@ -1,11 +1,17 @@
 import _ from "lodash";
+import useProdutoStore from "../store/ProdutoStore";
 
-interface Props {
-  tratarPesquisa: (nome: string) => void;
-}
-const Pesquisa = ({ tratarPesquisa }: Props) => {
+const Pesquisa = () => {
+  const setNome = useProdutoStore((s) => s.setNome);
+  const setPagina = useProdutoStore((s) => s.setPagina);
+  
+  const tratarPesquisa = (nome: string) => {
+    setNome(nome);
+    setPagina(0);
+  };
+
   const debouncedFunction = _.debounce((nome: string) => {
-    (tratarPesquisa(nome));
+    tratarPesquisa(nome);
   }, 1000);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

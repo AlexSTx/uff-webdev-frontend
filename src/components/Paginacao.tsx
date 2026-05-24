@@ -1,10 +1,34 @@
-interface Props {
-  pagina: number;
-  totalDePaginas: number;
-  tratarPaginacao: (pagina: number) => void;
-}
+import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
+import useProdutoStore from "../store/ProdutoStore";
 
-const Paginacao = ({ pagina, totalDePaginas, tratarPaginacao }: Props) => {
+const Paginacao = () => {
+  const pagina = useProdutoStore((s) => s.pagina);
+  const tamanho = useProdutoStore((s) => s.tamanho);
+  const nome = useProdutoStore((s) => s.nome);
+  const idRemovendo = useProdutoStore((s) => s.idRemovendo);
+
+  const setPagina = useProdutoStore((s) => s.setPagina);
+
+  const {
+    data: resultadoPaginado,
+    isPending: recuperandoProdutos,
+    isFetching: atualizandoProdutos,
+    error: errorRecuperarProdutos,
+  } = useRecuperarProdutosComPaginacao({
+    pagina: pagina.toString(),
+    tamanho: tamanho.toString(),
+    nome: nome
+  });
+
+  const tratarPaginacao = (pagina: number) => {
+    setPagina(pagina);
+  };
+
+  if (errorRecuperarProdutos) throw errorRecuperarProdutos;
+  if (recuperandoProdutos) return;
+
+  const totalDePaginas = resultadoPaginado.totalDePaginas;
+
   if (totalDePaginas < 2) return;
 
   const pages = Array.from({ length: totalDePaginas }).map((_, index) => index);
