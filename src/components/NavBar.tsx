@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import hortifruti from "../assets/hortifruti.png";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { useState } from "react";
+import useUsuarioStore from "../store/UsuarioStore";
 
 // Modos do Tailwindcss:
 // sm: 640px
@@ -12,6 +13,7 @@ import { useState } from "react";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const usuarioLogado = useUsuarioStore((s) => s.usuarioLogado);
 
   return (
     <nav className="mb-6 bg-gray-100 py-4">
@@ -67,8 +69,16 @@ const NavBar = () => {
               Cad. Produto
             </NavLink>
             <NavLink className="text-gray-700 hover:text-black" to="/login">
-              <i className="bi bi-box-arrow-in-right me-1"></i>
-              Entrar
+              {usuarioLogado ? 
+                <>
+                  <i className="bi bi-box-arrow-left me-1"></i>
+                  Sair
+                </> : 
+                <>
+                  <i className="bi bi-box-arrow-in-right me-1"></i>
+                  Entrar
+                </>
+              }
             </NavLink>
           </div>
 
@@ -152,8 +162,16 @@ const NavBar = () => {
               to="/login"
               onClick={() => setIsOpen(false)}
             >
-              <i className="bi bi-box-arrow-in-right me-1"></i>
-              Entrar
+              {usuarioLogado ? 
+                <>
+                  <i className="bi bi-box-arrow-left me-1"></i>
+                  Sair
+                </> : 
+                <>
+                  <i className="bi bi-box-arrow-in-right me-1"></i>
+                  Entrar
+                </>
+              }
             </NavLink>
           </div>
         )}

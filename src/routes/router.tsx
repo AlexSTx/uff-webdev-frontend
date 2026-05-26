@@ -9,6 +9,7 @@ import ProdutoPage from "../pages/ProdutoPage";
 import ProdutosComPaginacaoPage from "../pages/ProdutosComPaginacaoPage";
 import Layout from "./Layout";
 import ProdutosPage from "../pages/ProdutosPage";
+import PrivateRoutes from "./PrivateRoutes";
 
 const router = createBrowserRouter([
     {
@@ -25,14 +26,21 @@ const router = createBrowserRouter([
             {index: true, element: <Navigate to="/home" replace />},
             {path: "home", element: <HomePage />},
             {path: "carrinho", element: <CarrinhoPage />},
-            {path: "favoritos", element: <FavoritosPage />},
-            {path: "produtos-sem-paginacao", element: <ProdutosPage />},
-            {path: "produtos-com-paginacao", element: <ProdutosComPaginacaoPage />},
-            {path: "produtos/:id", element: <ProdutoPage />},
-            {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
             // A página de erro já faz isso
             // {path: "*", element: <h5 className="text-xl text-center mt-3">404 - Página não encontrada</h5>}
+        ]
+    },
+    {
+        path: "/",
+        element: <PrivateRoutes />,
+        errorElement: <ErrorPage />,
+        children: [
+            {path: "produtos-sem-paginacao", element: <ProdutosPage />},
+            {path: "produtos-com-paginacao", element: <ProdutosComPaginacaoPage />},
+            {path: "produtos/:id", element: <ProdutoPage />},
+            {path: "favoritos", element: <FavoritosPage />},
+            {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
         ]
     }
 ])
