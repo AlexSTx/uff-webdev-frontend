@@ -1,11 +1,14 @@
 import { useParams } from "react-router-dom";
 import useRecuperarProdutoPorId from "../hooks/useRecuperarProdutoPorId";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useRemoverProduto from "../hooks/useRemoverProduto";
+import useProdutoStore from "../store/ProdutoStore";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
+  const mensagem = useProdutoStore((s) => s.mensagem);
+  const setMensagem = useProdutoStore((s) => s.setMensagem);
 
   const { id } = useParams();
 
@@ -18,10 +21,18 @@ const ProdutoPage = () => {
   const tratarRemocao = (id: number) => {
     removerProduto(id);
     setRemovido(true);
+    setMensagem("Produto removido com sucesso!");
   };
 
   const { mutate: removerProduto, 
           error: errorRemoverProduto } = useRemoverProduto();
+
+  useEffect(() => {
+
+    return () => {
+      setMensagem("");
+    }
+  },[])
 
   if (errorRecuperarProduto) throw errorRecuperarProduto;
   if (errorRemoverProduto) throw errorRemoverProduto;
@@ -33,9 +44,9 @@ const ProdutoPage = () => {
       <h1 className="mb-1 text-xl font-semibold">Página de Produto</h1>
       <hr className="mb-4" />
 
-      {removido && (
+      {mensagem && (
         <div className="mb-3 rounded border-2 border-green-600 bg-green-100 px-4 py-3 font-bold text-green-800">
-          Produto removido com sucesso!
+          {mensagem}
         </div>
       )}
 
