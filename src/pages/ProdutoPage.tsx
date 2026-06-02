@@ -1,15 +1,18 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useRecuperarProdutoPorId from "../hooks/useRecuperarProdutoPorId";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import useRemoverProduto from "../hooks/useRemoverProduto";
 import useProdutoStore from "../store/ProdutoStore";
+import type { Produto } from "../interfaces/Produto";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
   const mensagem = useProdutoStore((s) => s.mensagem);
   const setMensagem = useProdutoStore((s) => s.setMensagem);
-
+  const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
+  const navigate = useNavigate();
+  
   const { id } = useParams();
 
   const {
@@ -17,6 +20,11 @@ const ProdutoPage = () => {
     isPending: recuperandoProduto,
     error: errorRecuperarProduto,
   } = useRecuperarProdutoPorId(+id!, removido);
+
+  const tratarEdicao = (produto: Produto) => {
+    setProdutoSelecionado(produto);
+    navigate("/cadastrar-produto");
+  };
 
   const tratarRemocao = (id: number) => {
     removerProduto(id);
@@ -120,6 +128,7 @@ const ProdutoPage = () => {
         </div>
         <div className="col-span-4 me-3 xl:col-span-3">
           <button
+            onClick={() => tratarEdicao(produto)}
             disabled={removido}
             className="btn-success w-full py-1"
             type="button"

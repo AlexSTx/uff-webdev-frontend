@@ -3,6 +3,8 @@ import hortifruti from "../assets/hortifruti.png";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { useState } from "react";
 import useUsuarioStore from "../store/UsuarioStore";
+import type { Produto } from "../interfaces/Produto";
+import useProdutoStore from "../store/ProdutoStore";
 
 // Modos do Tailwindcss:
 // sm: 640px
@@ -14,6 +16,7 @@ import useUsuarioStore from "../store/UsuarioStore";
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const usuarioLogado = useUsuarioStore((s) => s.usuarioLogado);
+  const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
 
   return (
     <nav className="mb-6 bg-gray-100 py-4">
@@ -62,6 +65,7 @@ const NavBar = () => {
               Produtos com Paginação
             </NavLink>
             <NavLink
+              onClick={() => setProdutoSelecionado({} as Produto)}
               className="text-gray-700 hover:text-black"
               to="/cadastrar-produto"
             >
@@ -152,7 +156,10 @@ const NavBar = () => {
             <NavLink
               className="text-gray-700 hover:text-black"
               to="/cadastrar-produto"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                setProdutoSelecionado({} as Produto);
+              }}
             >
               <i className="bi bi-database-add me-1"></i>
               Cad. Produto

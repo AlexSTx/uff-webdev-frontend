@@ -1,10 +1,15 @@
 import { useForm } from "react-hook-form";
 import databaseAdd from "../assets/skin/database_add.png";
+import databaseEdit from "../assets/skin/database_edit.png";
+import databaseCancel from "../assets/skin/multiply.png";
 import type { Produto } from "../interfaces/Produto";
 import useCadastrarProduto from "../hooks/useCadastrarProduto";
 import useProdutoStore from "../store/ProdutoStore";
 import { useNavigate } from "react-router-dom";
 import type { Categoria } from "../interfaces/Categoria";
+import { useEffect } from "react";
+import dayjs from "dayjs";
+import useAlterarProduto from "../hooks/useAlterarProduto";
 
 interface FormProduto {
   nome: string;
@@ -19,29 +24,66 @@ interface FormProduto {
 
 const ProdutoForm = () => {
   const setMensagem = useProdutoStore((s) => s.setMensagem);
+  const produtoSelecionado = useProdutoStore((s) => s.produtoSelecionado);
   const navigate = useNavigate();
 
+  const inicializarForm = () => {
+    if (produtoSelecionado.id) {
+      setValue("nome", produtoSelecionado.nome);
+      setValue("descricao", produtoSelecionado.descricao);
+      setValue("categoria", produtoSelecionado.categoria.id);
+      setValue("qtd_estoque", produtoSelecionado.qtdEstoque.toString());
+      setValue("data_cadastro", dayjs(produtoSelecionado.dataCadastro).format("YYYY-MM-DD"));
+      setValue("preco", produtoSelecionado.preco.toString());
+      setValue("imagem", produtoSelecionado.imagem);
+      setValue("disponivel", produtoSelecionado.disponivel);
+    } else {
+      reset();
+    }
+  }
+
+  useEffect(() => {
+    inicializarForm();
+  }, [produtoSelecionado])
+
   const {mutate: cadastrarProduto, error: errorCadastrarProduto} = useCadastrarProduto();
-  const {register, handleSubmit} = useForm<FormProduto>();
+  const {mutate: alterarProduto, error: errorAlterarProduto} = useAlterarProduto();
+
+  const {register, handleSubmit, setValue, reset} = useForm<FormProduto>();
   const submit = ({nome, descricao, categoria, data_cadastro, preco, qtd_estoque, imagem, disponivel}: FormProduto) => {
     const produto: Produto = {
         nome: nome,
         descricao: descricao,
         categoria: {id: categoria} as Categoria,
-        qtdEstoque: 10,
-        dataCadastro: new Date("2026/03/12"),
-        preco: 12.15,
-        imagem: "uva.png",
-        disponivel: true
+        qtdEstoque: +qtd_estoque,
+        dataCadastro: new Date(+data_cadastro.substring(0,4), 
+                               +data_cadastro.substring(5,7) - 1,
+                               +data_cadastro.substring(8,12)),
+        preco: +preco,
+        imagem: imagem,
+        disponivel: disponivel
     }
-    cadastrarProduto(produto, {
-        onSuccess: (produto: Produto) => {
+    if(produtoSelecionado.id) {
+      produto.id = produtoSelecionado.id;
+      alterarProduto(produto, {
+          onSuccess: (produto: Produto) => {
+              setMensagem("Produto alterado com sucesso.");
+              navigate("/produtos/" + produto.id);
+          }
+        });
+      } else {
+        cadastrarProduto(produto, {
+          onSuccess: (produto: Produto) => {
             setMensagem("Produto cadastrado com sucesso.");
             navigate("/produtos/" + produto.id);
-        }
-    });
-  }
-  if (errorCadastrarProduto) throw errorCadastrarProduto;
+          }
+        });
+      }
+    }
+
+    if (errorCadastrarProduto) throw errorCadastrarProduto;
+    if (errorAlterarProduto) throw errorAlterarProduto;
+    
   return (
     <form onSubmit={handleSubmit(submit)} className="mt-6" autoComplete="off">
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
@@ -214,10 +256,21 @@ const ProdutoForm = () => {
       <div className="grid grid-cols-12 gap-1 mb-6">
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <div className="col-span-12 lg:col-start-4 xl:col-start-3">
+            <div className="flex col-span-12 lg:col-start-4 xl:col-start-3">
               <button type="submit"
-                className="flex justify-center items-center btn-success px-5 py-1.5">
-                  <img src={databaseAdd} className="me-2" /> Cadastrar
+                className="flex justify-center items-center btn-success px-5 py-1.5 me-4">
+                  {produtoSelecionado.id ? 
+                    <>
+                      <img src={databaseEdit} className="me-2" /> Alterar
+                    </> : 
+                    <>
+                      <img src={databaseAdd} className="me-2" /> Cadastrar
+                    </>
+                  }
+              </button>
+              <button type="button" onClick={() => inicializarForm()}
+                className="flex justify-center items-center btn-secondary px-5 py-1.5">
+                  <img src={databaseCancel} className="me-2" /> Cancelar
               </button>
             </div>
           </div>
