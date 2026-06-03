@@ -7,7 +7,7 @@ export interface Produto {
   nome: string;
   descricao: string;
   disponivel: boolean;
-  dataCadastro: Date;
-  qtdEstoque: number;
-  preco: number;
+  dataCadastro: Date | null;
+  qtdEstoque: number | null;
+  preco: number | null;
 }

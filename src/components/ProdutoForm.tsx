@@ -32,9 +32,9 @@ const ProdutoForm = () => {
       setValue("nome", produtoSelecionado.nome);
       setValue("descricao", produtoSelecionado.descricao);
       setValue("categoria", produtoSelecionado.categoria.id);
-      setValue("qtd_estoque", produtoSelecionado.qtdEstoque.toString());
+      setValue("qtd_estoque", produtoSelecionado.qtdEstoque!.toString());
       setValue("data_cadastro", dayjs(produtoSelecionado.dataCadastro).format("YYYY-MM-DD"));
-      setValue("preco", produtoSelecionado.preco.toString());
+      setValue("preco", produtoSelecionado.preco!.toString());
       setValue("imagem", produtoSelecionado.imagem);
       setValue("disponivel", produtoSelecionado.disponivel);
     } else {
@@ -55,11 +55,12 @@ const ProdutoForm = () => {
         nome: nome,
         descricao: descricao,
         categoria: {id: categoria} as Categoria,
-        qtdEstoque: +qtd_estoque,
-        dataCadastro: new Date(+data_cadastro.substring(0,4), 
+        qtdEstoque: qtd_estoque ? +qtd_estoque : null,
+        dataCadastro: data_cadastro ? 
+                      new Date(+data_cadastro.substring(0,4), 
                                +data_cadastro.substring(5,7) - 1,
-                               +data_cadastro.substring(8,12)),
-        preco: +preco,
+                               +data_cadastro.substring(8,12)) : null,
+        preco: preco ? +preco : null,
         imagem: imagem,
         disponivel: disponivel
     }

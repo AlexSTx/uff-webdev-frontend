@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { Produto } from "../interfaces/Produto";
 import { queryClient } from "../main";
+import isErrorResponse from "../util/isErrorResponse";
 
 const alterarProduto = async (produto: Produto): Promise<Produto> => {
   const response = await fetch("http://localhost:8080/produtos", {
@@ -11,9 +12,15 @@ const alterarProduto = async (produto: Produto): Promise<Produto> => {
     body: JSON.stringify(produto)
   });
   if (!response.ok) {
-    throw new Error(
-      "Ocorreu um erro ao alterar um produto. Status code: " + response.status
-    );
+    const error: any = await response.json();
+    if (isErrorResponse(error)) {
+      throw error;
+    } else {
+      throw new Error(
+        "Ocorreu um erro ao cadastrar um produto. Status code: " +
+          response.status
+      );
+    }
   }
   return await response.json();
 };
