@@ -10,17 +10,55 @@ import type { Categoria } from "../interfaces/Categoria";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import useAlterarProduto from "../hooks/useAlterarProduto";
+import z from "zod";
+import isCategoriaValida from "../util/isCategoriaValida";
+import isDataValida from "../util/isDataValida";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface FormProduto {
-  nome: string;
-  descricao: string;
-  categoria: number;
-  qtd_estoque: string;
-  data_cadastro: string;
-  preco: string;
-  imagem: string;
-  disponivel: boolean;
-}
+// interface FormProduto {
+//   nome: string;
+//   descricao: string;
+//   categoria: number;
+//   qtd_estoque: string;
+//   data_cadastro: string;
+//   preco: string;
+//   imagem: string;
+//   disponivel: boolean;
+// }
+
+const regexImagem = /^[a-z]+\.(gif|jpg|png|bmp)$/;
+const schema = z.object({
+  nome: z
+    .string()
+    .nonempty({ message: "O 'nome' deve ser informado." })
+    .min(3, { message: "O 'nome' deve ter pelo menos 3 caracteres." }),
+  descricao: z
+    .string()
+    .nonempty("A 'descrição' deve ser informada."),
+  categoria: z
+    .number()
+    .refine(isCategoriaValida, {message: "A 'categoria' deve ser informada."}),
+  data_cadastro: z
+    .string()
+    .nonempty("A 'data de cadastro' deve ser informada.")
+    .refine(isDataValida, "Data inválida."),
+  preco: z
+    .string()
+    .nonempty("O preço deve ser informado")
+    .refine((val) => +val > 0.10, {message: "O 'preço' deve ser > 0,10"}),
+  qtd_estoque: z
+    .string()
+    .nonempty("A 'quantidade em estoque' deve ser informada"),
+  imagem: z
+    .string()
+    .nonempty("A 'imagem' deve ser informada.")
+    // Expressão regular só funciona se o tipo no zod for string
+    // e no html o input for type="text".
+    .regex(regexImagem, { message: "Nome de imagem inválido." }),
+  disponivel: z.boolean(),
+});
+
+type FormProduto = z.infer<typeof schema>;
 
 const ProdutoForm = () => {
   const setMensagem = useProdutoStore((s) => s.setMensagem);
@@ -49,8 +87,10 @@ const ProdutoForm = () => {
   const {mutate: cadastrarProduto, error: errorCadastrarProduto} = useCadastrarProduto();
   const {mutate: alterarProduto, error: errorAlterarProduto} = useAlterarProduto();
 
-  const {register, handleSubmit, setValue, reset} = useForm<FormProduto>();
-  const submit = ({nome, descricao, categoria, data_cadastro, preco, qtd_estoque, imagem, disponivel}: FormProduto) => {
+  const {register, handleSubmit, setValue, reset, formState: {errors}} = useForm<FormProduto>({resolver: zodResolver(schema)});
+  const submit = ({nome, descricao, categoria, 
+                   data_cadastro, preco, qtd_estoque, 
+                   imagem, disponivel}: FormProduto) => {
     const produto: Produto = {
         nome: nome,
         descricao: descricao,
@@ -59,7 +99,7 @@ const ProdutoForm = () => {
         dataCadastro: data_cadastro ? 
                       new Date(+data_cadastro.substring(0,4), 
                                +data_cadastro.substring(5,7) - 1,
-                               +data_cadastro.substring(8,12)) : null,
+                               +data_cadastro.substring(8,10)) : null,
         preco: preco ? +preco : null,
         imagem: imagem,
         disponivel: disponivel
@@ -103,6 +143,7 @@ const ProdutoForm = () => {
                 // id="nome"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.nome && <p className="font-semibold text-sm text-red-700">{errors.nome.message}</p>}
             </div>
           </div>
         </div>  
@@ -122,6 +163,7 @@ const ProdutoForm = () => {
                 // id="descricao"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.descricao && <p className="font-semibold text-sm text-red-700">{errors.descricao.message}</p>}
             </div>
           </div>
         </div>  
@@ -147,6 +189,7 @@ const ProdutoForm = () => {
                 <option value="2">Legume</option>
                 <option value="3">Verdura</option>
               </select>
+              {errors.categoria && <p className="font-semibold text-sm text-red-700">{errors.categoria.message}</p>}
             </div>
           </div>
         </div>  
@@ -167,6 +210,7 @@ const ProdutoForm = () => {
                 // id="data_cadastro"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.data_cadastro && <p className="font-semibold text-sm text-red-700">{errors.data_cadastro.message}</p>}
             </div>
           </div>
         </div>  
@@ -190,6 +234,7 @@ const ProdutoForm = () => {
                 // id="preco"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.preco && <p className="font-semibold text-sm text-red-700">{errors.preco.message}</p>}
             </div>
           </div>
         </div>  
@@ -210,6 +255,7 @@ const ProdutoForm = () => {
                 // id="qtd_estoque"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.qtd_estoque && <p className="font-semibold text-sm text-red-700">{errors.qtd_estoque.message}</p>}
             </div>
           </div>
         </div>  
@@ -231,6 +277,7 @@ const ProdutoForm = () => {
                 // id="imagem"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.imagem && <p className="font-semibold text-sm text-red-700">{errors.imagem.message}</p>}
             </div>
           </div>
         </div>  
