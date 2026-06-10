@@ -1,26 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import type { Usuario } from "../interfaces/Usuario";
-
-const efetuarLogin = async (usuario: Usuario) => {
-  const response = await fetch("http://localhost:8080/autenticacao/login", {
-    method: "POST",
-    headers: {
-        "Content-type": "Application/json"
-    },
-    body: JSON.stringify(usuario)
-  });
-  if (!response.ok) {
-    throw new Error(
-      "Ocorreu um erro ao efetuar login. Status code: " +
-        response.status
-    );
-  }
-  return await response.json();
-};
+import useAPIAutenticacao from "./useAPIAutenticacao";
 
 const useEfetuarLogin = () => {
+  const { login } = useAPIAutenticacao();
   return useMutation({
-    mutationFn: (usuario: Usuario) => efetuarLogin(usuario),
+    mutationFn: (usuario: Usuario) => login(usuario),
   });
 };
 export default useEfetuarLogin;
