@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { Produto } from "../interfaces/Produto";
-import useAPI from "./useAPI";
+import type { Produto } from "../../interfaces/Produto";
+import useAPI from "../useAPI";
 
 const useRecuperarProdutosComPaginacao = (queryString: Record<string, string>) => {
   const {recuperarComPaginacao} = useAPI<Produto>("/produtos");

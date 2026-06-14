@@ -1,3 +1,6 @@
 export interface TokenResponse {
-    token: number;
+    token: string;
+    idUsuario: number;
+    nome: string;
+    role: string;
 }

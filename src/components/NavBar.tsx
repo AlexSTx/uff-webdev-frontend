@@ -1,10 +1,10 @@
-import { NavLink } from "react-router-dom";
-import hortifruti from "../assets/hortifruti.png";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { useState } from "react";
-import useUsuarioStore from "../store/UsuarioStore";
+import { NavLink } from "react-router-dom";
+import hortifruti from "../assets/hortifruti.png";
 import type { Produto } from "../interfaces/Produto";
 import useProdutoStore from "../store/ProdutoStore";
+import useTokenStore from "../store/TokenStore";
 
 // Modos do Tailwindcss:
 // sm: 640px
@@ -15,7 +15,7 @@ import useProdutoStore from "../store/ProdutoStore";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const usuarioLogado = useUsuarioStore((s) => s.usuarioLogado);
+  const tokenResponse = useTokenStore((s) => s.tokenResponse);
   const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
 
   return (
@@ -73,7 +73,7 @@ const NavBar = () => {
               Cad. Produto
             </NavLink>
             <NavLink className="text-gray-700 hover:text-black" to="/login">
-              {usuarioLogado ? 
+              {tokenResponse.idUsuario > 0 ? 
                 <>
                   <i className="bi bi-box-arrow-left me-1"></i>
                   Sair
@@ -169,7 +169,7 @@ const NavBar = () => {
               to="/login"
               onClick={() => setIsOpen(false)}
             >
-              {usuarioLogado ? 
+              {tokenResponse.idUsuario > 0 ? 
                 <>
                   <i className="bi bi-box-arrow-left me-1"></i>
                   Sair

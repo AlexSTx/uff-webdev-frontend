@@ -47,13 +47,13 @@ const TabelaDeProdutosOtimista = ({ produtos, tratarRemocao, idRemovendo, remove
               </td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.disponivel ? "Sim" : "Não"}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</td>
-              <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco.toLocaleString("pt-BR", {
+              <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco!.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
                 useGrouping: true
               })}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
-                <button disabled={removendoProduto} onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
+                <button disabled={removendoProduto} onClick={() => tratarRemocao(produto.id!)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                     {idRemovendo === produto.id ? 
                     <>

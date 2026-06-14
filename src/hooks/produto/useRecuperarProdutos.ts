@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import useAPI from "./useAPI";
-import type { Produto } from "../interfaces/Produto";
-import { URL_PRODUTOS } from "../util/constantes";
+import useAPI from "../useAPI";
+import type { Produto } from "../../interfaces/Produto";
+import { URL_PRODUTOS } from "../../util/constantes";
 
 const useRecuperarProdutos = () => {
   const { recuperar } = useAPI<Produto>(URL_PRODUTOS);

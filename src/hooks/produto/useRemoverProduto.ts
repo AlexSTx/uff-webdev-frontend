@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../main";
-import useAPI from "./useAPI";
-import type { Produto } from "../interfaces/Produto";
+import { queryClient } from "../../main";
+import useAPI from "../useAPI";
+import type { Produto } from "../../interfaces/Produto";
 
 const useRemoverProduto = () => {
   const {removerPorId} = useAPI<Produto>("/produtos");

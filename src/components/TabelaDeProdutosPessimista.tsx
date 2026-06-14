@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import databaseDelete from '../assets/skin/database_delete.png';
-import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
-import useRemoverProduto from "../hooks/useRemoverProduto";
+import useRecuperarProdutosComPaginacao from "../hooks/produto/useRecuperarProdutosComPaginacao";
+import useRemoverProduto from "../hooks/produto/useRemoverProduto";
 import useProdutoStore from "../store/ProdutoStore";
 
 const TabelaDeProdutosPessimista = () => {
@@ -75,13 +75,13 @@ const TabelaDeProdutosPessimista = () => {
               </td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.disponivel ? "Sim" : "Não"}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</td>
-              <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco.toLocaleString("pt-BR", {
+              <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco!.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
                 useGrouping: true
               })}</td>
               <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
-                <button onClick={() => tratarRemocao(produto.id)} className="btn-danger px-4 py-1" type="button">
+                <button onClick={() => tratarRemocao(produto.id!)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                     {idRemovendo === produto.id ? 
                     <>

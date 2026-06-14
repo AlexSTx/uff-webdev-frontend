@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
-import useRecuperarProdutoPorId from "../hooks/useRecuperarProdutoPorId";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import useRemoverProduto from "../hooks/useRemoverProduto";
-import useProdutoStore from "../store/ProdutoStore";
+import { useNavigate, useParams } from "react-router-dom";
 import type { Produto } from "../interfaces/Produto";
+import useProdutoStore from "../store/ProdutoStore";
+import useRecuperarProdutoPorId from "../hooks/produto/useRecuperarProdutoPorId";
+import useRemoverProduto from "../hooks/produto/useRemoverProduto";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
@@ -97,7 +97,7 @@ const ProdutoPage = () => {
               Preço
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
-              {produto.preco.toLocaleString("pt-BR", {
+              {produto.preco!.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
                 useGrouping: true,
@@ -138,7 +138,7 @@ const ProdutoPage = () => {
         </div>
         <div className="col-span-4 me-3 xl:col-span-3">
           <button
-            onClick={() => tratarRemocao(produto.id)}
+            onClick={() => tratarRemocao(produto.id!)}
             disabled={removido}
             className="btn-danger w-full py-1"
             type="button"

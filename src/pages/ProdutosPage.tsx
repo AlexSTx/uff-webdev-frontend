@@ -1,6 +1,6 @@
 import TabelaDeProdutosOtimista from "../components/TabelaDeProdutosOtimista";
-import useRecuperarProdutos from "../hooks/useRecuperarProdutos";
-import useRemoverProdutoOtimista from "../hooks/useRemoverProdutoOtimista";
+import useRecuperarProdutos from "../hooks/produto/useRecuperarProdutos";
+import useRemoverProdutoOtimista from "../hooks/produto/useRemoverProdutoOtimista";
 
 const ProdutosPage = () => {
   const {

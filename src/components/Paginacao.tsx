@@ -1,4 +1,4 @@
-import useRecuperarProdutosComPaginacao from "../hooks/useRecuperarProdutosComPaginacao";
+import useRecuperarProdutosComPaginacao from "../hooks/produto/useRecuperarProdutosComPaginacao";
 import useProdutoStore from "../store/ProdutoStore";
 
 const Paginacao = () => {

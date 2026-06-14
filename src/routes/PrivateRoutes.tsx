@@ -1,16 +1,16 @@
 import { Navigate, useLocation } from "react-router-dom";
+import useTokenStore from "../store/TokenStore";
 import Layout from "./Layout";
-import useUsuarioStore from "../store/UsuarioStore";
 
 const PrivateRoutes = () => {
-  const usuarioLogado = useUsuarioStore((s) => s.usuarioLogado);
+  const tokenResponse = useTokenStore((s) => s.tokenResponse);
   const location = useLocation();
-  
-  if (usuarioLogado) {
-    return <Layout />;
+
+  if (tokenResponse.idUsuario > 0) {
+    return <Layout />
   }
   else {
-    return <Navigate to="/login" state={{destino: location.pathname}} />;
+    return <Navigate to="/login" state={{destino: location.pathname}} />
   }
 }
 export default PrivateRoutes

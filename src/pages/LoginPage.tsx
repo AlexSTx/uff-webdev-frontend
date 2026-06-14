@@ -1,59 +1,89 @@
-import { useForm } from "react-hook-form";
-import type { Usuario } from "../interfaces/Usuario";
-import useUsuarioStore from "../store/UsuarioStore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import useEfetuarLogin from "../hooks/useEfetuarLogin";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
+import z from "zod";
 import type { TokenResponse } from "../interfaces/TokenResponse";
+import type { UsuarioLogin } from "../interfaces/UsuarioLogin";
+import useLoginStore from "../store/LoginStore";
+import useTokenStore from "../store/TokenStore";
+import isErrorResponse from "../util/isErrorResponse";
+import useEfetuarLogin from "../hooks/autenticacao/useEfetuarLogin";
 
-interface LoginForm {
-  conta: string;
-  senha: string;
-}
+const schema = z.object({
+  email: z
+    .email("Informe um email válido."),
+  senha: z
+    .string()
+    .nonempty("Informe a senha.")
+});
+
+type FormLogin = z.infer<typeof schema>;
 
 const LoginPage = () => {
-
-  const setUsuarioLogado = useUsuarioStore((s) => s.setUsuarioLogado);
+  const setTokenResponse = useTokenStore((s) => s.setTokenResponse);
   const [loginInvalido, setLoginInvalido] = useState(false);
+  const setMsg = useLoginStore((s) => s.setMsg);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // const pessoa = {nome: "João Paulo", endereco: "Rua X n. 10"};
-  // const empregado = {...pessoa, salario: 5000};  // spread
-  // console.log(empregado);
-
-  const {register, handleSubmit} = useForm<LoginForm>();
-
-  const {mutate: efetuarLogin,
-         error: errorEfetuarLogin} = useEfetuarLogin();
-
   useEffect(() => {
-    setUsuarioLogado(0);
-  }, [])
+    setTokenResponse({ idUsuario: 0, token: "", nome: "", role: "" }); // Logout
+    return () => {
+      setLoginInvalido(false);
+      setMsg("");
+    };
+  }, []);
 
-  const submit = ({conta, senha}: LoginForm) => {
-    console.log(conta, senha);
-    const usuario: Usuario = {conta, senha};
-    efetuarLogin(usuario, {
-      onSuccess: (tokenResponse: TokenResponse) => {
-        if (tokenResponse.token) {
-          setUsuarioLogado(tokenResponse.token);
-          if (location.state?.destino) {
-            navigate(location.state.destino);
-          }
-          else {
-            navigate("/");
-          }
+  const { register, handleSubmit, formState: {errors} } = useForm<FormLogin>({resolver: zodResolver(schema)});
+  const { mutate: efetuarLogin } = useEfetuarLogin();
+
+  const submit = ({ email, senha }: FormLogin) => {
+    const usuarioLogin: UsuarioLogin = { email, senha };
+    efetuarLogin(usuarioLogin, {
+      onSuccess: (tokenResp: TokenResponse) => {
+        console.log("tokenResp = ", tokenResp);
+
+        setTokenResponse({
+          idUsuario: tokenResp.idUsuario,
+          token: tokenResp.token,
+          nome: tokenResp.nome,
+          role: tokenResp.role,
+        });
+        if (location.state?.destino) {
+          navigate(location.state.destino);
+        } else {
+          navigate("/");
         }
-        else {
+      },
+      onError: (error: any) => {
+        if (isErrorResponse(error)) {
           setLoginInvalido(true);
+          setMsg("Login inválido");
+        } else {
+          console.log("deu erro", error);
+          // Aqui nunca irá ocorrer o erro 403 pois todos os usuários podem 
+          // tentar efetuar login. Um erro 403 só ocorrerá quando um usuário
+          // estive logado e tentar fazer algo sem possuir o respectivo Role.
+          // *****************************************************************
+          // *   Aqui estamos capturando o erro lançado em useEfetuarLogin   *
+          // *****************************************************************
+          if (error.message.includes("401")) {
+            setLoginInvalido(true);
+            setMsg("Email ou senha inválidos.");
+          } else {
+            setLoginInvalido(true);
+            setMsg(
+              "Não foi possível efetuar o login. Por favor, tente mais tarde."
+            );
+          }
         }
-      }
-    })
-  }
+      },
+    });
+  };
 
-  if (errorEfetuarLogin) throw errorEfetuarLogin;
+  // if (errorEfetuarLogin) throw errorEfetuarLogin;
 
   return (
     <>
@@ -80,7 +110,7 @@ const LoginPage = () => {
           shadow-2xl: sombra forte.
           duration-300: transicoes duram 300ms (quando houver hover, focus, etc.). */}
           <h2 className="text-center text-2xl font-bold text-gray-800">
-            Informe sua Conta e Senha
+            Informe seu Email e Senha
           </h2>
           {loginInvalido && (
             <div className="mb-3 rounded border-2 border-red-600 bg-red-100 px-4 py-3 font-bold text-red-800">
@@ -90,7 +120,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit(submit)} className="space-y-4">
             <div>
               <label
-                // htmlFor="conta"
+                // htmlFor="email"
                 className="mb-1 block text-sm font-medium text-gray-700"
                 // Sem block, o <label> é inline.
                 // Se você colocar ambos (label e input) na mesma linha sem quebra (ou colocar
@@ -100,15 +130,19 @@ const LoginPage = () => {
                 // inteira e quebra linha antes/depois. Isso ajuda a manter o rótulo acima do input,
                 // em vez de ficar na mesma linha.
               >
-                Conta
+                Email
               </label>
               <input
-                {...register("conta")} // Adiciona ao input os aributos: onChange, onBlur, name e ref
+                {...register("email")} // Adiciona ao input os aributos: onChange, onBlur, name e ref
                 type="text"
-                placeholder="Informe sua conta"
-                // id="conta"
+                placeholder="Informe seu email"
+                // id="email"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.email && <p style={{color: "red", 
+                                          fontSize: "14px", 
+                                          marginTop: "2px", 
+                                          marginBottom: "0px"}}>{errors.email.message}</p>}
             </div>
             <div>
               <label
@@ -126,6 +160,10 @@ const LoginPage = () => {
                 // id="senha"
                 className="w-full rounded-md border-2 border-gray-300 bg-white px-4 py-2 text-gray-900 outline-none hover:border-gray-500"
               />
+              {errors.senha && <p style={{color: "red", 
+                                          fontSize: "14px", 
+                                          marginTop: "2px", 
+                                          marginBottom: "0px"}}>{errors.senha.message}</p>}
             </div>
             <div className="flex items-center justify-end">
               <a tabIndex={-1} href="#" className="text-green-600 hover:underline">

@@ -1,110 +1,85 @@
 import type { ResultadoPaginado } from "../interfaces/ResultadoPaginado";
 import { URL_BASE } from "../util/constantes";
-import isErrorResponse from "../util/isErrorResponse";
+import useFetchWithAuth from "./useFetchWithAuth";
 
 const useAPI = <T>(endpoint: string) => {
   const URL = `${URL_BASE}${endpoint}`;
+  const { fetchWithAuth } = useFetchWithAuth();
 
-  const recuperar = async (): Promise<T[]> => {
-    const response = await fetch(URL);
+  const handleResponseError = async (response: Response) => {
     if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo GET para " + URL_BASE + endpoint + ". Status: " + response.status,
-      );
+      // Se ocorrer um erro 401 ou 403 então a linha abaixo com "return await response.json()"
+      // dará erro pois não retornará json.
+      const error: any = await response.json().catch(() => ({}));
+      if (error) throw error;
+      else
+        throw new Error(
+          "Erro desconhecido: " + " - Status code: " + response.status
+        );
     }
-    return await response.json();
   };
 
   const cadastrar = async (obj: T): Promise<T> => {
-    const response = await fetch(URL, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(obj)
+    const response = await fetchWithAuth(URL, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
     });
-    if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo POST para " + URL_BASE + endpoint + ". Status: " + response.status,
-      );
-    }
+    await handleResponseError(response);
     return await response.json();
-  }
-
-  const alterar = async (obj: T): Promise<T> => {
-    const response = await fetch(URL, {
-        method: "PUT",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-    });
-    if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo PUT para " + URL_BASE + endpoint + ". Status: " + response.status,
-      );
-    }
-    return await response.json();
-  }
+  };
 
   const recuperarPorId = async (id: number): Promise<T> => {
-    const response = await fetch(URL + "/" + id);
-    if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo GET para "
-          + URL_BASE + endpoint + "/" + id + ". Status: " + response.status
-      );
-    }
+    const response = await fetchWithAuth(`${URL}/${id}`);
+    await handleResponseError(response);
+    return await response.json();
+  };
+
+  const recuperar = async (): Promise<T[]> => {
+    const response = await fetchWithAuth(URL);
+    await handleResponseError(response);
+    return await response.json();
+  };
+
+  const alterar = async (obj: T): Promise<T> => {
+    const response = await fetchWithAuth(URL, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    });
+    await handleResponseError(response);
+    return await response.json();
+  };
+
+  const recuperarComPaginacao = async (
+    queryString: Record<string, string>
+  ): Promise<ResultadoPaginado<T>> => {
+    const response = await fetchWithAuth(
+      `${URL}/paginacao?` + new URLSearchParams({ ...queryString })
+    );
+    await handleResponseError(response);
     return await response.json();
   };
 
   const removerPorId = async (id: number): Promise<void> => {
-    const response = await fetch(URL + "/" + id, {
-        method: "DELETE"
+    const response = await fetchWithAuth(`${URL}/${id}`, {
+      method: "DELETE",
     });
-    if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo DELETE para "
-          + URL_BASE + endpoint + "/" + id + ". Status: " + response.status
-      );
-    }
-    // return await response.json();
+    await handleResponseError(response);
+    // sem: return await response.json() pois o back-end retorna void.
   };
 
-  const recuperarComPaginacao = async (queryString: Record<string, string>): Promise<ResultadoPaginado<T>> => {
-    const response = await fetch(URL + "/paginacao?" + new URLSearchParams(queryString));
-    if (!response.ok) {
-      const error: any = await response.json();
-      if (isErrorResponse(error)) {
-        throw error;
-      }  
-      throw new Error(
-        "Ocorreu um erro ao enviar uma requisição do tipo GET com paginação para " + URL_BASE + endpoint + ". Status: " + response.status,
-      );
-    }
-    return await response.json();
+  return {
+    cadastrar,
+    recuperarPorId,
+    recuperar,
+    alterar,
+    recuperarComPaginacao,
+    removerPorId,
   };
-
-  return { recuperar, cadastrar, alterar, recuperarPorId, removerPorId, recuperarComPaginacao };
 };
 export default useAPI;
