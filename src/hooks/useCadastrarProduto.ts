@@ -1,33 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import type { Produto } from "../interfaces/Produto";
 import { queryClient } from "../main";
-import isErrorResponse from "../util/isErrorResponse";
-
-const cadastrarProduto = async (produto: Produto): Promise<Produto> => {
-  const response = await fetch("http://localhost:8080/produtos", {
-    method: "POST",
-    headers: {
-        "Content-type": "Application/json"
-    },
-    body: JSON.stringify(produto)
-  });
-  if (!response.ok) {
-    const error: any = await response.json();
-    if (isErrorResponse(error)) {
-      throw error;
-    } else {
-      throw new Error(
-        "Ocorreu um erro ao cadastrar um produto. Status code: " +
-          response.status
-      );
-    }
-  }
-  return await response.json();
-};
+import useAPI from "./useAPI";
+import { URL_PRODUTOS } from "../util/constantes";
 
 const useCadastrarProduto = () => {
+  const {cadastrar} = useAPI<Produto>(URL_PRODUTOS);
+  
   return useMutation({
-    mutationFn: (produto: Produto) => cadastrarProduto(produto),
+    mutationFn: (produto: Produto) => cadastrar(produto),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["produtos"],

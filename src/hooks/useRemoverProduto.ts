@@ -1,30 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../main";
-
-const removerProdutoPorId = async (id: number) => {
-  // Acrescentei este timeout de 1 segundo para a remoção ficar mais lenta
-  // e podermos ver na tela o efeito de uma remoção real que não acontecerá
-  // instantaneamente.
-  await new Promise<void>((resolve) => {
-    setTimeout(() => {
-        return resolve()
-    }, 1000)
-  })  
-
-  const response = await fetch("http://localhost:8080/produtos/" + id, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error(
-      "Ocorreu um erro ao remover produto. Status code: " + response.status,
-    );
-  }
-  // return await response.json() - Não retorna nada uma vez que o back-end retorna void
-};
+import useAPI from "./useAPI";
+import type { Produto } from "../interfaces/Produto";
 
 const useRemoverProduto = () => {
+  const {removerPorId} = useAPI<Produto>("/produtos");
+
   return useMutation({
-    mutationFn: (id: number) => removerProdutoPorId(id),
+    mutationFn: (id: number) => removerPorId(id),
     onSuccess: async () => {
       // invalidateQueries retorna uma Promise, logo, para tornar esse método mais 
       // síncrono utilizamos async / await. A função definida em onSettled é 
