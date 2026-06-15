@@ -40,12 +40,12 @@ const useFetchWithAuth = () => {
 
       if (response.status === 401) {
         setLoginInvalido(true);
-        setMsg("É preciso efetuar login para acessar este recurso.");
+        setMsg("Efetue login para acessar este recurso.");
         setTokenResponse({ token: "", idUsuario: 0,  nome: "", role: "" });
         navigate("/login");
       } else if (response.status === 403) {
         setLoginInvalido(true);
-        setMsg("Você não tem permissão para acessar este recurso.");
+        setMsg("Sem permissão para acessar este recurso.");
         setTokenResponse({ token: "", idUsuario: 0,  nome: "", role: "" });
         navigate("/login");
       } else {

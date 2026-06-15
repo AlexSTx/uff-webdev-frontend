@@ -22,8 +22,10 @@ type FormLogin = z.infer<typeof schema>;
 
 const LoginPage = () => {
   const setTokenResponse = useTokenStore((s) => s.setTokenResponse);
-  const [loginInvalido, setLoginInvalido] = useState(false);
+  const loginInvalido = useLoginStore((s) => s.loginInvalido);
+  const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido);
   const setMsg = useLoginStore((s) => s.setMsg);
+  const msg = useLoginStore((s) => s.msg);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,7 +116,7 @@ const LoginPage = () => {
           </h2>
           {loginInvalido && (
             <div className="mb-3 rounded border-2 border-red-600 bg-red-100 px-4 py-3 font-bold text-red-800">
-              Login inválido.
+              {msg}
             </div>
           )}	
           <form onSubmit={handleSubmit(submit)} className="space-y-4">
