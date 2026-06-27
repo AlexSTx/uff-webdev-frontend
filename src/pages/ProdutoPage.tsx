@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Produto } from "../interfaces/Produto";
 import useProdutoStore from "../store/ProdutoStore";
+import useTokenStore from "../store/TokenStore";
 import useRecuperarProdutoPorId from "../hooks/produto/useRecuperarProdutoPorId";
 import useRemoverProduto from "../hooks/produto/useRemoverProduto";
 
@@ -11,6 +12,7 @@ const ProdutoPage = () => {
   const mensagem = useProdutoStore((s) => s.mensagem);
   const setMensagem = useProdutoStore((s) => s.setMensagem);
   const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
+  const role = useTokenStore((s) => s.tokenResponse.role);
   const navigate = useNavigate();
   
   const { id } = useParams();
@@ -126,26 +128,30 @@ const ProdutoPage = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-4 me-3 xl:col-span-3">
-          <button
-            onClick={() => tratarEdicao(produto)}
-            disabled={removido}
-            className="btn-success w-full py-1"
-            type="button"
-          >
-            Editar
-          </button>
-        </div>
-        <div className="col-span-4 me-3 xl:col-span-3">
-          <button
-            onClick={() => tratarRemocao(produto.id!)}
-            disabled={removido}
-            className="btn-danger w-full py-1"
-            type="button"
-          >
-            Remover
-          </button>
-        </div>
+        {role === "ADMIN" && (
+          <>
+            <div className="col-span-4 me-3 xl:col-span-3">
+              <button
+                onClick={() => tratarEdicao(produto)}
+                disabled={removido}
+                className="btn-success w-full py-1"
+                type="button"
+              >
+                Editar
+              </button>
+            </div>
+            <div className="col-span-4 me-3 xl:col-span-3">
+              <button
+                onClick={() => tratarRemocao(produto.id!)}
+                disabled={removido}
+                className="btn-danger w-full py-1"
+                type="button"
+              >
+                Remover
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
