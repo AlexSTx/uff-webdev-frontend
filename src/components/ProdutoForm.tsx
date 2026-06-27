@@ -8,11 +8,9 @@ import useProdutoStore from "../store/ProdutoStore";
 import { useNavigate } from "react-router-dom";
 import type { Categoria } from "../interfaces/Categoria";
 import { useEffect } from "react";
-import dayjs from "dayjs";
 import useAlterarProduto from "../hooks/produto/useAlterarProduto";
 import z from "zod";
 import isCategoriaValida from "../util/isCategoriaValida";
-import isDataValida from "../util/isDataValida";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // interface FormProduto {
@@ -38,10 +36,6 @@ const schema = z.object({
   categoria: z
     .number()
     .refine(isCategoriaValida, {message: "A 'categoria' deve ser informada."}),
-  data_cadastro: z
-    .string()
-    .nonempty("A 'data de cadastro' deve ser informada.")
-    .refine(isDataValida, "Data inválida."),
   preco: z
     .string()
     .nonempty("O preço deve ser informado")
@@ -71,7 +65,6 @@ const ProdutoForm = () => {
       setValue("descricao", produtoSelecionado.descricao);
       setValue("categoria", produtoSelecionado.categoria.id);
       setValue("qtd_estoque", produtoSelecionado.qtdEstoque!.toString());
-      setValue("data_cadastro", dayjs(produtoSelecionado.dataCadastro).format("YYYY-MM-DD"));
       setValue("preco", produtoSelecionado.preco!.toString());
       setValue("imagem", produtoSelecionado.imagem);
       setValue("disponivel", produtoSelecionado.disponivel);
@@ -88,18 +81,16 @@ const ProdutoForm = () => {
   const {mutate: alterarProduto, error: errorAlterarProduto} = useAlterarProduto();
 
   const {register, handleSubmit, setValue, reset, formState: {errors}} = useForm<FormProduto>({resolver: zodResolver(schema)});
-  const submit = ({nome, descricao, categoria, 
-                   data_cadastro, preco, qtd_estoque, 
+  const submit = ({nome, descricao, categoria,
+                   preco, qtd_estoque,
                    imagem, disponivel}: FormProduto) => {
     const produto: Produto = {
         nome: nome,
         descricao: descricao,
         categoria: {id: categoria} as Categoria,
         qtdEstoque: qtd_estoque ? +qtd_estoque : null,
-        dataCadastro: data_cadastro ? 
-                      new Date(+data_cadastro.substring(0,4), 
-                               +data_cadastro.substring(5,7) - 1,
-                               +data_cadastro.substring(8,10)) : null,
+        // A data de cadastro é definida/controle do backend; o cliente nunca a envia.
+        dataCadastro: null,
         preco: preco ? +preco : null,
         imagem: imagem,
         disponivel: disponivel
@@ -192,28 +183,7 @@ const ProdutoForm = () => {
               {errors.categoria && <p className="font-semibold text-sm text-red-700">{errors.categoria.message}</p>}
             </div>
           </div>
-        </div>  
-
-        <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
-          <div className="grid grid-cols-12">
-            <label
-              // htmlFor="data_cadastro"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
-              <span className="hidden md:block">Data Cad.</span>
-              <span className="md:hidden">Data de Cadastro</span>
-            </label>
-            <div className="col-span-12 lg:col-span-9 xl:col-span-10">
-              <input
-                {...register("data_cadastro")}
-                type="date"
-                // id="data_cadastro"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
-              />
-              {errors.data_cadastro && <p className="font-semibold text-sm text-red-700">{errors.data_cadastro.message}</p>}
-            </div>
-          </div>
-        </div>  
+        </div>
       </div>
 
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
