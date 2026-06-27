@@ -9,6 +9,9 @@ import useLoginStore from "../store/LoginStore";
 import useTokenStore from "../store/TokenStore";
 import isErrorResponse from "../util/isErrorResponse";
 import useEfetuarLogin from "../hooks/autenticacao/useEfetuarLogin";
+import useCarrinhoStore from "../store/CarrinhoStore";
+import { URL_BASE, URL_CARRINHO } from "../util/constantes";
+import { queryClient } from "../main";
 
 const schema = z.object({
   email: z
@@ -40,12 +43,40 @@ const LoginPage = () => {
 
   const { register, handleSubmit, formState: {errors} } = useForm<FormLogin>({resolver: zodResolver(schema)});
   const { mutate: efetuarLogin } = useEfetuarLogin();
+  const limparCarrinhoConvidado = useCarrinhoStore((s) => s.limpar);
 
   const submit = ({ email, senha }: FormLogin) => {
     const usuarioLogin: UsuarioLogin = { email, senha };
     efetuarLogin(usuarioLogin, {
-      onSuccess: (tokenResp: TokenResponse) => {
+      onSuccess: async (tokenResp: TokenResponse) => {
         console.log("tokenResp = ", tokenResp);
+
+        // Migra o carrinho de convidado (localStorage) para o banco de dados.
+        // Lê o estado atual via getState() para evitar dependências de hook em callback.
+        const itensConvidado = useCarrinhoStore.getState().itens;
+        if (itensConvidado.length > 0) {
+          try {
+            await Promise.all(
+              itensConvidado.map((i) =>
+                fetch(`${URL_BASE}${URL_CARRINHO}`, {
+                  method: "POST",
+                  headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${tokenResp.token}`,
+                  },
+                  body: JSON.stringify({
+                    produtoId: i.produto.id,
+                    quantidade: i.quantidade,
+                  }),
+                }),
+              ),
+            );
+            limparCarrinhoConvidado();
+            queryClient.invalidateQueries({ queryKey: ["carrinho"], exact: false });
+          } catch (e) {
+            console.error("Falha ao migrar carrinho de convidado:", e);
+          }
+        }
 
         setTokenResponse({
           idUsuario: tokenResp.idUsuario,

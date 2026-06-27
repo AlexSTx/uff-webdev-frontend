@@ -1,14 +1,20 @@
 import { Link } from "react-router-dom";
-import useCarrinhoStore from "../store/CarrinhoStore";
+import useRecuperarCarrinho from "../hooks/carrinho/useRecuperarCarrinho";
+import useRemoverItemCarrinho from "../hooks/carrinho/useRemoverItemCarrinho";
+import useAlterarItemCarrinho from "../hooks/carrinho/useAlterarItemCarrinho";
+import useLimparCarrinho from "../hooks/carrinho/useLimparCarrinho";
 
 const CarrinhoPage = () => {
-  const itens = useCarrinhoStore((s) => s.itens);
-  const alterarQuantidade = useCarrinhoStore((s) => s.alterarQuantidade);
-  const removerProduto = useCarrinhoStore((s) => s.removerProduto);
-  const limpar = useCarrinhoStore((s) => s.limpar);
+  const { data: itens, isPending: recuperando, error } = useRecuperarCarrinho();
+  const { mutate: removerItem, isPending: removendo } = useRemoverItemCarrinho();
+  const { mutate: alterarQuantidade } = useAlterarItemCarrinho();
+  const { mutate: limpar, isPending: limpando } = useLimparCarrinho();
 
-  const total = itens.reduce(
-    (acc, i) => acc + (i.produto.preco ?? 0) * i.quantidade,
+  if (error) throw error;
+  if (recuperando) return <p className="text-lg">Recuperando carrinho...</p>;
+
+  const total = (itens ?? []).reduce(
+    (acc, i) => acc + i.subtotal,
     0,
   );
 
@@ -17,7 +23,7 @@ const CarrinhoPage = () => {
       <h1 className="mb-1 text-xl font-semibold">Carrinho</h1>
       <hr className="mb-4" />
 
-      {itens.length === 0 ? (
+      {!itens || itens.length === 0 ? (
         <p className="text-lg">Seu carrinho está vazio.</p>
       ) : (
         <>
@@ -34,29 +40,26 @@ const CarrinhoPage = () => {
               </thead>
               <tbody>
                 {itens.map((item) => (
-                  <tr
-                    key={item.produto.id}
-                    className="border-b border-gray-200"
-                  >
+                  <tr key={item.id} className="border-b border-gray-200">
                     <td className="py-2 pe-4">
                       <div className="flex items-center gap-3">
-                        <Link to={`/produtos/${item.produto.id}`}>
+                        <Link to={`/produtos/${item.produtoId}`}>
                           <img
-                            src={"/" + item.produto.imagem}
+                            src={"/" + item.imagem}
                             width="50px"
-                            alt={item.produto.nome}
+                            alt={item.nome}
                           />
                         </Link>
                         <Link
-                          to={`/produtos/${item.produto.id}`}
+                          to={`/produtos/${item.produtoId}`}
                           className="hover:underline"
                         >
-                          {item.produto.nome} ({item.produto.descricao})
+                          {item.nome} ({item.descricao})
                         </Link>
                       </div>
                     </td>
                     <td className="py-2 pe-4">
-                      {(item.produto.preco ?? 0).toLocaleString("pt-BR", {
+                      {item.precoUnitario.toLocaleString("pt-BR", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}
@@ -67,26 +70,24 @@ const CarrinhoPage = () => {
                         min={1}
                         value={item.quantidade}
                         onChange={(e) =>
-                          alterarQuantidade(
-                            item.produto.id!,
-                            Math.max(1, Number(e.target.value)),
-                          )
+                          alterarQuantidade({
+                            id: item.id,
+                            quantidade: Math.max(1, Number(e.target.value)),
+                          })
                         }
                         className="w-20 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500"
                       />
                     </td>
                     <td className="py-2 pe-4">
-                      {((item.produto.preco ?? 0) * item.quantidade).toLocaleString(
-                        "pt-BR",
-                        {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        },
-                      )}
+                      {item.subtotal.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </td>
                     <td className="py-2">
                       <button
-                        onClick={() => removerProduto(item.produto.id!)}
+                        onClick={() => removerItem(item.id)}
+                        disabled={removendo}
                         className="btn-danger px-3 py-1"
                         type="button"
                       >
@@ -101,7 +102,8 @@ const CarrinhoPage = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <button
-              onClick={limpar}
+              onClick={() => limpar()}
+              disabled={limpando}
               className="btn-secondary px-4 py-1"
               type="button"
             >

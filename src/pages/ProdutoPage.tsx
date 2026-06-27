@@ -2,11 +2,11 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Produto } from "../interfaces/Produto";
-import useCarrinhoStore from "../store/CarrinhoStore";
 import useProdutoStore from "../store/ProdutoStore";
 import useTokenStore from "../store/TokenStore";
 import useRecuperarProdutoPorId from "../hooks/produto/useRecuperarProdutoPorId";
 import useRemoverProduto from "../hooks/produto/useRemoverProduto";
+import useAdicionarItemCarrinho from "../hooks/carrinho/useAdicionarItemCarrinho";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
@@ -16,7 +16,6 @@ const ProdutoPage = () => {
   const setMensagem = useProdutoStore((s) => s.setMensagem);
   const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
   const role = useTokenStore((s) => s.tokenResponse.role);
-  const adicionarAoCarrinho = useCarrinhoStore((s) => s.adicionarProduto);
   const navigate = useNavigate();
   
   const { id } = useParams();
@@ -38,13 +37,17 @@ const ProdutoPage = () => {
     setMensagem("Produto removido com sucesso!");
   };
 
-  const tratarAdicionarCarrinho = () => {
-    adicionarAoCarrinho(produto!, qtdCarrinho);
-    setMsgCarrinho(`${qtdCarrinho} × ${produto!.nome} adicionado(s) ao carrinho.`);
-  };
-
-  const { mutate: removerProduto, 
+  const { mutate: removerProduto,
           error: errorRemoverProduto } = useRemoverProduto();
+
+  const { mutate: adicionarItem, isPending: adicionandoItem } = useAdicionarItemCarrinho();
+
+  const tratarAdicionarCarrinho = () => {
+    adicionarItem(
+      { produto: produto!, quantidade: qtdCarrinho },
+      { onSuccess: () => setMsgCarrinho(`${qtdCarrinho} × ${produto!.nome} adicionado(s) ao carrinho.`) }
+    );
+  };
 
   useEffect(() => {
 
@@ -157,7 +160,7 @@ const ProdutoPage = () => {
           </label>
           <button
             onClick={tratarAdicionarCarrinho}
-            disabled={removido || !produto.disponivel}
+            disabled={removido || !produto.disponivel || adicionandoItem}
             className="btn-primary px-4 py-2"
             type="button"
           >
