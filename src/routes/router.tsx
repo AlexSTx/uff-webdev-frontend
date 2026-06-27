@@ -10,6 +10,7 @@ import ProdutosComPaginacaoPage from "../pages/ProdutosComPaginacaoPage";
 import Layout from "./Layout";
 import ProdutosPage from "../pages/ProdutosPage";
 import PrivateRoutes from "./PrivateRoutes";
+import AdminRoutes from "./AdminRoutes";
 
 const router = createBrowserRouter([
     {
@@ -29,7 +30,6 @@ const router = createBrowserRouter([
             {path: "produtos-sem-paginacao", element: <ProdutosPage />},
             {path: "produtos-com-paginacao", element: <ProdutosComPaginacaoPage />},
             {path: "produtos/:id", element: <ProdutoPage />},
-            {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
             {path: "login", element: <LoginPage />},
             // A página de erro já faz isso
             // {path: "*", element: <h5 className="text-xl text-center mt-3">404 - Página não encontrada</h5>}
@@ -41,6 +41,14 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {path: "favoritos", element: <FavoritosPage />},
+        ]
+    },
+    {
+        path: "/",
+        element: <AdminRoutes />,
+        errorElement: <ErrorPage />,
+        children: [
+            {path: "cadastrar-produto", element: <CadastrarProdutoPage />},
         ]
     }
 ])

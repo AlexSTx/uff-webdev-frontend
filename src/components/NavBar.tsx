@@ -64,14 +64,16 @@ const NavBar = () => {
               <i className="bi bi-card-list me-1"></i>
               Produtos com Paginação
             </NavLink>
-            <NavLink
-              onClick={() => setProdutoSelecionado({} as Produto)}
-              className="text-gray-700 hover:text-black"
-              to="/cadastrar-produto"
-            >
-              <i className="bi bi-database-add me-1"></i>
-              Cad. Produto
-            </NavLink>
+            {tokenResponse.role === "ADMIN" && (
+              <NavLink
+                onClick={() => setProdutoSelecionado({} as Produto)}
+                className="text-gray-700 hover:text-black"
+                to="/cadastrar-produto"
+              >
+                <i className="bi bi-database-add me-1"></i>
+                Cad. Produto
+              </NavLink>
+            )}
             <NavLink className="text-gray-700 hover:text-black" to="/login">
               {tokenResponse.idUsuario > 0 ? 
                 <>
@@ -153,17 +155,19 @@ const NavBar = () => {
               <i className="bi bi-card-list me-1"></i>
               Produtos com Paginação
             </NavLink>
-            <NavLink
-              className="text-gray-700 hover:text-black"
-              to="/cadastrar-produto"
-              onClick={() => {
-                setIsOpen(false);
-                setProdutoSelecionado({} as Produto);
-              }}
-            >
-              <i className="bi bi-database-add me-1"></i>
-              Cad. Produto
-            </NavLink>
+            {tokenResponse.role === "ADMIN" && (
+              <NavLink
+                className="text-gray-700 hover:text-black"
+                to="/cadastrar-produto"
+                onClick={() => {
+                  setIsOpen(false);
+                  setProdutoSelecionado({} as Produto);
+                }}
+              >
+                <i className="bi bi-database-add me-1"></i>
+                Cad. Produto
+              </NavLink>
+            )}
             <NavLink
               className="text-gray-700 hover:text-black"
               to="/login"
