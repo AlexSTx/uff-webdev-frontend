@@ -33,7 +33,9 @@ const useEstoqueWS = (
   const token = useTokenStore((s) => s.tokenResponse.token);
 
   const onEventoRef = useRef(onEvento);
-  onEventoRef.current = onEvento;
+  useEffect(() => {
+    onEventoRef.current = onEvento;
+  }, [onEvento]);
 
   // Lista estável (sem nulos/NaN, sem duplicatas e ordenada) usada como
   // dependência do efeito — evita reconectar quando só a ordem/identidade
