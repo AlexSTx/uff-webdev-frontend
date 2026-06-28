@@ -50,13 +50,6 @@ const NavBar = () => {
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
             </NavLink>
-            <NavLink
-              className={({ isActive }) => "hidden md:block text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
-              to="/favoritos"
-            >
-              <i className="bi bi-heart me-1"></i>
-              Favoritos
-            </NavLink>
           </div>
           <div className="hidden items-center space-x-4 md:flex">
             <NavLink
@@ -144,14 +137,6 @@ const NavBar = () => {
             >
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
-              to="/favoritos"
-              onClick={() => setIsOpen(false)}
-            >
-              <i className="bi bi-heart me-1"></i>
-              Favoritos
             </NavLink>
             <NavLink
               className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
