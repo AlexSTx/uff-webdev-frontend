@@ -7,6 +7,7 @@ import useTokenStore from "../store/TokenStore";
 import useRecuperarProdutoPorId from "../hooks/produto/useRecuperarProdutoPorId";
 import useRemoverProduto from "../hooks/produto/useRemoverProduto";
 import useAdicionarItemCarrinho from "../hooks/carrinho/useAdicionarItemCarrinho";
+import useEstoqueProdutoWS from "../hooks/produto/useEstoqueProdutoWS";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
@@ -25,6 +26,10 @@ const ProdutoPage = () => {
     isPending: recuperandoProduto,
     error: errorRecuperarProduto,
   } = useRecuperarProdutoPorId(+id!, removido);
+
+  // Assina o WebSocket do produto para receber a notificação de estoque
+  // esgotado em tempo real e refletir imediatamente na UI.
+  useEstoqueProdutoWS(+id!);
 
   const tratarEdicao = (produto: Produto) => {
     setProdutoSelecionado(produto);
