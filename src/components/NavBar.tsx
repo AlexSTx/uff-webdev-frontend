@@ -1,6 +1,6 @@
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import hortifruti from "../assets/hortifruti.png";
 import type { Produto } from "../interfaces/Produto";
 import useProdutoStore from "../store/ProdutoStore";
@@ -16,7 +16,17 @@ import useTokenStore from "../store/TokenStore";
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const tokenResponse = useTokenStore((s) => s.tokenResponse);
+  const setTokenResponse = useTokenStore((s) => s.setTokenResponse);
   const setProdutoSelecionado = useProdutoStore((s) => s.setProdutoSelecionado);
+  const navigate = useNavigate();
+
+  // Logout explícito. Antes, o logout acontecia como efeito colateral do
+  // mount da LoginPage — o que deslogava qualquer um que passasse por /login.
+  const efetuarLogout = () => {
+    setTokenResponse({ token: "", idUsuario: 0, nome: "", role: "" });
+    setIsOpen(false);
+    navigate("/login");
+  };
 
   return (
     <nav className="mb-6 bg-gray-100 py-4">
@@ -74,12 +84,18 @@ const NavBar = () => {
                 Cad. Produto
               </NavLink>
             )}
-            <NavLink className="text-gray-700 hover:text-black" to="/login">
-              {tokenResponse.idUsuario > 0 ? 
+            <NavLink
+              className="text-gray-700 hover:text-black"
+              to="/login"
+              onClick={() => {
+                if (tokenResponse.idUsuario > 0) efetuarLogout();
+              }}
+            >
+              {tokenResponse.idUsuario > 0 ?
                 <>
                   <i className="bi bi-box-arrow-left me-1"></i>
                   Sair
-                </> : 
+                </> :
                 <>
                   <i className="bi bi-box-arrow-in-right me-1"></i>
                   Entrar
@@ -171,13 +187,16 @@ const NavBar = () => {
             <NavLink
               className="text-gray-700 hover:text-black"
               to="/login"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (tokenResponse.idUsuario > 0) efetuarLogout();
+              }}
             >
-              {tokenResponse.idUsuario > 0 ? 
+              {tokenResponse.idUsuario > 0 ?
                 <>
                   <i className="bi bi-box-arrow-left me-1"></i>
                   Sair
-                </> : 
+                </> :
                 <>
                   <i className="bi bi-box-arrow-in-right me-1"></i>
                   Entrar

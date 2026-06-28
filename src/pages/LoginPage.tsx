@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import z from "zod";
 import type { TokenResponse } from "../interfaces/TokenResponse";
 import type { UsuarioLogin } from "../interfaces/UsuarioLogin";
@@ -24,6 +24,7 @@ const schema = z.object({
 type FormLogin = z.infer<typeof schema>;
 
 const LoginPage = () => {
+  const tokenResponse = useTokenStore((s) => s.tokenResponse);
   const setTokenResponse = useTokenStore((s) => s.setTokenResponse);
   const loginInvalido = useLoginStore((s) => s.loginInvalido);
   const setLoginInvalido = useLoginStore((s) => s.setLoginInvalido);
@@ -33,17 +34,27 @@ const LoginPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Limpa mensagens de erro de login anteriores ao montar a página.
+  // Antes daqui havia um setTokenResponse(...) que deslogava o usuário
+  // incondicionalmente ao montar a LoginPage — isso fazia qualquer visita
+  // (inclusive via NavBar "Sair" ou via redirect de rotas protegidas) logar
+  // o usuário off. O logout agora é feito explicitamente pelo NavBar.
   useEffect(() => {
-    setTokenResponse({ idUsuario: 0, token: "", nome: "", role: "" }); // Logout
-    return () => {
-      setLoginInvalido(false);
-      setMsg("");
-    };
+    setLoginInvalido(false);
+    setMsg("");
   }, []);
 
   const { register, handleSubmit, formState: {errors} } = useForm<FormLogin>({resolver: zodResolver(schema)});
   const { mutate: efetuarLogin } = useEfetuarLogin();
   const limparCarrinhoConvidado = useCarrinhoStore((s) => s.limpar);
+
+  // A página de login é fallback apenas para quem NÃO está logado.
+  // Se um usuário autenticado cair aqui (ex.: digitou /login na barra de
+  // endereço), redireciona para a home em vez de deslogar (como acontecia
+  // antes) ou de mostrar o formulário.
+  if (tokenResponse.idUsuario > 0) {
+    return <Navigate to="/home" replace />;
+  }
 
   const submit = ({ email, senha }: FormLogin) => {
     const usuarioLogin: UsuarioLogin = { email, senha };
