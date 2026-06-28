@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useCancelarPedido from "../hooks/pedido/useCancelarPedido";
 import useRecuperarPedidoPorId from "../hooks/pedido/useRecuperarPedidoPorId";
@@ -9,6 +9,19 @@ const FORMAS_PAGAMENTO_LABEL: Record<string, string> = {
   CARTAO_DEBITO: "Cartão de débito",
   PIX: "PIX",
   BOLETO: "Boleto",
+};
+
+const PRAZO_MINUTOS = 10;
+
+// O backend roda em UTC (container) e serializa o LocalDateTime sem offset
+// (ex.: "2026-06-27T22:45:00"). O `new Date(string)` interpreta esse formato
+// como horário *local* do navegador, o que no Brasil (UTC-3) faz o prazo
+// passar a valer ~3h a mais do que o real. Por isso anexamos o "Z" para
+// indicar que o horário está em UTC.
+const parseDataPedido = (dataPedido: string): Date => {
+  if (!dataPedido) return new Date(NaN);
+  const temOffset = /[zZ]|[+-]\d{2}:\d{2}$/.test(dataPedido);
+  return new Date(temOffset ? dataPedido : `${dataPedido}Z`);
 };
 
 const PagamentoPage = () => {
@@ -22,6 +35,23 @@ const PagamentoPage = () => {
   const { mutate: cancelar, isPending: cancelando } = useCancelarPedido();
   const [pago, setPago] = useState(false);
   const [cancelado, setCancelado] = useState(false);
+  const [expirado, setExpirado] = useState(false);
+
+  // Quando o prazo de 10 minutos do pedido pendente acaba, marca como
+  // expirado e reconsulta o pedido para refletir o cancelamento do backend.
+  useEffect(() => {
+    if (!pedido || pedido.status !== "PENDENTE") return;
+    const deadline =
+      parseDataPedido(pedido.dataPedido).getTime() + PRAZO_MINUTOS * 60 * 1000;
+    const restante = deadline - Date.now();
+    const timeout = setTimeout(
+      () => {
+        setExpirado(true);
+      },
+      Math.max(0, restante),
+    );
+    return () => clearTimeout(timeout);
+  }, [pedido]);
 
   if (error) throw error;
   if (isPending || !pedido)
@@ -59,6 +89,27 @@ const PagamentoPage = () => {
         <div className="mt-4 flex gap-3">
           <Link to="/home" className="btn-secondary px-4 py-1">
             Voltar à loja
+          </Link>
+        </div>
+      </>
+    );
+  }
+
+  if (expirado) {
+    return (
+      <>
+        <h1 className="mb-1 text-xl font-semibold">Tempo esgotado</h1>
+        <hr className="mb-4" />
+        <p>
+          Tempo para pagamento expirado, pedido <strong>#{pedido.id}</strong>{" "}
+          cancelado. Tente novamente.
+        </p>
+        <div className="mt-4 flex gap-3">
+          <Link to="/home" className="btn-secondary px-4 py-1">
+            Voltar à loja
+          </Link>
+          <Link to="/carrinho" className="btn-secondary px-4 py-1">
+            Ir para o carrinho
           </Link>
         </div>
       </>
@@ -104,7 +155,7 @@ const PagamentoPage = () => {
           })}
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Clique abaixo para confirmar o pagamento. A confirmação do pagamento fica disponível por 10 minutos após o fechamento do pedido.
+          Clique abaixo para confirmar o pagamento. A confirmação do pagamento fica disponível por {PRAZO_MINUTOS} minutos após o fechamento do pedido.
         </p>
       </div>
 
@@ -131,7 +182,7 @@ const PagamentoPage = () => {
 
       {pagando && (
         <p className="mt-3 text-sm text-gray-600">
-          Aguarde, processando...
+          Aguarde, processando seu pagamento...
         </p>
       )}
     </>
