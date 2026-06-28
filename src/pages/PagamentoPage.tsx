@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import useCancelarPedido from "../hooks/pedido/useCancelarPedido";
 import useRecuperarPedidoPorId from "../hooks/pedido/useRecuperarPedidoPorId";
 import usePagarPedido from "../hooks/pedido/usePagarPedido";
 
@@ -18,13 +19,15 @@ const PagamentoPage = () => {
     !Number.isNaN(pedidoId),
   );
   const { mutate: pagar, isPending: pagando } = usePagarPedido();
+  const { mutate: cancelar, isPending: cancelando } = useCancelarPedido();
   const [pago, setPago] = useState(false);
+  const [cancelado, setCancelado] = useState(false);
 
   if (error) throw error;
   if (isPending || !pedido)
     return <p className="text-lg">Recuperando pedido...</p>;
 
-  if (pago || pedido.status !== "PENDENTE") {
+  if (pago || pedido.status === "PAGO") {
     return (
       <>
         <h1 className="mb-1 text-xl font-semibold">Pagamento confirmado</h1>
@@ -41,6 +44,39 @@ const PagamentoPage = () => {
             Ir para o carrinho
           </Link>
         </div>
+      </>
+    );
+  }
+
+  if (cancelado || pedido.status === "CANCELADO") {
+    return (
+      <>
+        <h1 className="mb-1 text-xl font-semibold">Pedido cancelado</h1>
+        <hr className="mb-4" />
+        <p>
+          Pedido <strong>#{pedido.id}</strong> cancelado.
+        </p>
+        <div className="mt-4 flex gap-3">
+          <Link to="/home" className="btn-secondary px-4 py-1">
+            Voltar à loja
+          </Link>
+        </div>
+      </>
+    );
+  }
+
+  if (pedido.status !== "PENDENTE") {
+    return (
+      <>
+        <h1 className="mb-1 text-xl font-semibold">Pedido</h1>
+        <hr className="mb-4" />
+        <p>
+          Pedido <strong>#{pedido.id}</strong> não está mais pendente (status
+          atual: <strong>{pedido.status}</strong>).
+        </p>
+        <Link to="/home" className="btn-secondary mt-3 inline-block px-4 py-1">
+          Voltar à loja
+        </Link>
       </>
     );
   }
@@ -68,19 +104,30 @@ const PagamentoPage = () => {
           })}
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Clique abaixo para confirmar o pagamento. O
-          processamento leva cerca de 10 segundos.
+          Clique abaixo para confirmar o pagamento. A confirmação do pagamento fica disponível por 10 minutos após o fechamento do pedido.
         </p>
       </div>
 
-      <button
-        onClick={() => pagar(pedido.id, { onSuccess: () => setPago(true) })}
-        disabled={pagando}
-        className="btn-primary px-4 py-2"
-        type="button"
-      >
-        {pagando ? "Processando pagamento..." : "Confirmar Pagamento"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => pagar(pedido.id, { onSuccess: () => setPago(true) })}
+          disabled={pagando || cancelando}
+          className="btn-primary px-4 py-2"
+          type="button"
+        >
+          {pagando ? "Processando pagamento..." : "Confirmar Pagamento"}
+        </button>
+        <button
+          onClick={() =>
+            cancelar(pedido.id, { onSuccess: () => setCancelado(true) })
+          }
+          disabled={pagando || cancelando}
+          className="btn-danger px-4 py-2"
+          type="button"
+        >
+          {cancelando ? "Cancelando..." : "Cancelar pedido"}
+        </button>
+      </div>
 
       {pagando && (
         <p className="mt-3 text-sm text-gray-600">
