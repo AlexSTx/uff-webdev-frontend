@@ -24,6 +24,13 @@ const useRecuperarCarrinho = () => {
     quantidade: i.quantidade,
     subtotal: (i.produto.preco ?? 0) * i.quantidade,
     dataAdicao: "",
+    // No modo convidado não consultamos o backend para checar estoque, então
+    // assumimos disponível. O evento de esgotamento só chega a quem está com
+    // a página do produto aberta (WebSocket por produto), não ao convidado.
+    disponivel: true,
+    // Convidado não tem backend para confirmar estoque; usa o que vier do
+    // produto (null/undefined → Infinity para nunca avisar parcial).
+    estoqueDisponivel: i.produto.qtdEstoque ?? Number.POSITIVE_INFINITY,
   }));
   return { data, isPending: false, error: null };
 };
