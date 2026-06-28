@@ -8,6 +8,7 @@ import useRecuperarProdutoPorId from "../hooks/produto/useRecuperarProdutoPorId"
 import useRemoverProduto from "../hooks/produto/useRemoverProduto";
 import useAdicionarItemCarrinho from "../hooks/carrinho/useAdicionarItemCarrinho";
 import useEstoqueProdutoWS from "../hooks/produto/useEstoqueProdutoWS";
+import isErrorResponse from "../util/isErrorResponse";
 
 const ProdutoPage = () => {
   const [removido, setRemovido] = useState(false);
@@ -45,14 +46,21 @@ const ProdutoPage = () => {
   const { mutate: removerProduto,
           error: errorRemoverProduto } = useRemoverProduto();
 
-  const { mutate: adicionarItem, isPending: adicionandoItem } = useAdicionarItemCarrinho();
+  const { mutate: adicionarItem, isPending: adicionandoItem, error: erroAdicao } = useAdicionarItemCarrinho();
 
   const esgotado = (produto?.qtdEstoque ?? 0) <= 0;
 
   const tratarAdicionarCarrinho = () => {
     adicionarItem(
       { produto: produto!, quantidade: qtdCarrinho },
-      { onSuccess: () => setMsgCarrinho(`${qtdCarrinho} × ${produto!.nome} adicionado(s) ao carrinho.`) }
+      {
+        onSuccess: () =>
+          setMsgCarrinho(
+            `${qtdCarrinho} × ${produto!.nome} adicionado(s) ao carrinho.`,
+          ),
+        // Limpa um erro anterior ao iniciar nova tentativa.
+        onError: () => setMsgCarrinho(""),
+      },
     );
   };
 
@@ -61,7 +69,7 @@ const ProdutoPage = () => {
     return () => {
       setMensagem("");
     }
-  },[])
+  }, [setMensagem])
 
   if (errorRecuperarProduto) throw errorRecuperarProduto;
   if (errorRemoverProduto) throw errorRemoverProduto;
@@ -150,6 +158,41 @@ const ProdutoPage = () => {
         {msgCarrinho && (
           <div className="col-span-12 mb-3 rounded border-2 border-blue-600 bg-blue-100 px-4 py-2 font-semibold text-blue-800">
             {msgCarrinho}
+          </div>
+        )}
+
+        {erroAdicao && (
+          <div
+            className="col-span-12 mb-3 flex items-start gap-3 rounded border-2 border-red-600 bg-red-100 px-4 py-3 text-red-900"
+            role="alert"
+          >
+            <i className="bi bi-x-octagon-fill mt-0.5"></i>
+            <div>
+              <p className="font-semibold">
+                {isErrorResponse(erroAdicao) && erroAdicao.errorCode === 409
+                  ? "Não foi possível adicionar ao carrinho: estoque insuficiente."
+                  : "Não foi possível adicionar ao carrinho."}
+              </p>
+              {isErrorResponse(erroAdicao) &&
+                Object.keys(erroAdicao.map || {}).length > 0 && (
+                  <ul className="mt-1 list-inside list-disc text-sm">
+                    {Object.values(erroAdicao.map).map((descr) => {
+                      const m = descr.match(
+                        /^(?<nome>[^:]+):\s*pedido=(?<ped>\d+),\s*disponivel=(?<disp>\d+)$/,
+                      );
+                      if (m?.groups) {
+                        const { nome, ped, disp } = m.groups;
+                        return (
+                          <li key={descr}>
+                            {nome} — pedido: {ped}, disponível: {disp}
+                          </li>
+                        );
+                      }
+                      return <li key={descr}>{descr}</li>;
+                    })}
+                  </ul>
+                )}
+            </div>
           </div>
         )}
 
