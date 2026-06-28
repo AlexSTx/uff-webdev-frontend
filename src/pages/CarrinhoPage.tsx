@@ -38,7 +38,14 @@ const CarrinhoPage = () => {
       <hr className="mb-4" />
 
       {itensCarrinho.length === 0 ? (
-        <p className="text-lg">Seu carrinho está vazio.</p>
+        <div className="card flex flex-col items-center gap-3 py-12 text-center">
+          <i className="bi bi-cart-x text-5xl text-gray-300"></i>
+          <p className="text-lg font-semibold text-gray-700">Seu carrinho está vazio</p>
+          <p className="text-sm text-gray-500">Explore nosso catálogo de peças e adicione algo!</p>
+          <Link to="/produtos-com-paginacao" className="btn-primary px-5 py-2">
+            Ver produtos
+          </Link>
+        </div>
       ) : (
         <>
           {itensEsgotados.length > 0 && (
@@ -126,8 +133,8 @@ const CarrinhoPage = () => {
                           <span className="badge-danger">Esgotado</span>
                         ) : (
                           item.precoUnitario.toLocaleString("pt-BR", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "BRL",
                           })
                         )}
                       </td>
@@ -158,8 +165,8 @@ const CarrinhoPage = () => {
                           <span className="text-gray-500">—</span>
                         ) : (
                           item.subtotal.toLocaleString("pt-BR", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "BRL",
                           })
                         )}
                       </td>
@@ -180,24 +187,28 @@ const CarrinhoPage = () => {
             </table>
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
             <button
               onClick={() => limpar()}
               disabled={limpando}
-              className="btn-secondary px-4 py-1"
+              className="btn-secondary px-4 py-2"
               type="button"
             >
+              <i className="bi bi-trash me-1"></i>
               Limpar carrinho
             </button>
-            <div className="flex items-center gap-4">
-              <div className="text-lg font-semibold">
-                Total:{" "}
-                {total.toLocaleString("pt-BR", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+            <div className="flex items-center justify-between gap-6 sm:justify-end">
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Total</p>
+                <p className="text-xl font-bold text-orange-600">
+                  {total.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </p>
               </div>
-              <Link to="/checkout" className="btn-primary px-4 py-1">
+              <Link to="/checkout" className="btn-primary px-6 py-2">
+                <i className="bi bi-bag-check me-1"></i>
                 Fechar pedido
               </Link>
             </div>

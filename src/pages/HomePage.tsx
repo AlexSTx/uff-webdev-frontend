@@ -35,36 +35,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Carrosséis por categoria — cada um filtra o mesmo array de produtos
-          pelo id da categoria. Não criamos queries separadas nem alteramos o
-          backend; o filter() é JS puro e roda no cliente.
-
-          categoria.id === 1 → Processadores
-          categoria.id === 2 → Placas de Vídeo
-          categoria.id === 3 → Memórias RAM
-
-          O CarrosselProdutos já retorna null quando recebe uma lista vazia,
-          então o título "Processadores" continua aparecendo mesmo sem
-          produtos, mas o carrossel sumirá sozinho. */}
-      {isPending ? (
-        <p className="text-gray-600">Carregando produtos...</p>
-      ) : (
-        <div className="space-y-6">
-          <div>
-            <h3 className="mb-3 text-xl font-bold text-gray-800">Processadores</h3>
-            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 1)} />
-          </div>
-          <div>
-            <h3 className="mb-3 text-xl font-bold text-gray-800">Placas de Vídeo</h3>
-            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 2)} />
-          </div>
-          <div>
-            <h3 className="mb-3 text-xl font-bold text-gray-800">Memórias RAM</h3>
-            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 3)} />
-          </div>
-        </div>
-      )}
-
       {/* Cards de categorias — atalhos visuais para a listagem de produtos.
           Cada card linka para /produtos-sem-paginacao (não há rota por
           categoria). Os ícones vêm do Bootstrap Icons, já importado no
@@ -104,6 +74,36 @@ const HomePage = () => {
           </Link>
         </div>
       </div>
+
+      {/* Carrosséis por categoria — cada um filtra o mesmo array de produtos
+          pelo id da categoria. Não criamos queries separadas nem alteramos o
+          backend; o filter() é JS puro e roda no cliente.
+
+          categoria.id === 1 → Processadores
+          categoria.id === 2 → Placas de Vídeo
+          categoria.id === 3 → Memórias RAM
+
+          O CarrosselProdutos já retorna null quando recebe uma lista vazia,
+          então o título "Processadores" continua aparecendo mesmo sem
+          produtos, mas o carrossel sumirá sozinho. */}
+      {isPending ? (
+        <p className="text-gray-600">Carregando produtos...</p>
+      ) : (
+        <div className="space-y-6">
+          <div>
+            <h3 className="mb-3 text-xl font-bold text-gray-800">Processadores</h3>
+            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 1)} />
+          </div>
+          <div>
+            <h3 className="mb-3 text-xl font-bold text-gray-800">Placas de Vídeo</h3>
+            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 2)} />
+          </div>
+          <div>
+            <h3 className="mb-3 text-xl font-bold text-gray-800">Memórias RAM</h3>
+            <CarrosselProdutos produtos={(produtos ?? []).filter((p) => p.categoria.id === 3)} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
