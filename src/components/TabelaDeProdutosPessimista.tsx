@@ -1,18 +1,29 @@
 import dayjs from "dayjs";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import databaseDelete from '../assets/skin/database_delete.png';
 import useRecuperarProdutosComPaginacao from "../hooks/produto/useRecuperarProdutosComPaginacao";
 import useRemoverProduto from "../hooks/produto/useRemoverProduto";
+import useAdicionarItemCarrinho from "../hooks/carrinho/useAdicionarItemCarrinho";
 import useProdutoStore from "../store/ProdutoStore";
+import useTokenStore from "../store/TokenStore";
 
 const TabelaDeProdutosPessimista = () => {
+  const role = useTokenStore((s) => s.tokenResponse.role);
   const pagina = useProdutoStore((s) => s.pagina);
   const tamanho = useProdutoStore((s) => s.tamanho);
   const nome = useProdutoStore((s) => s.nome);
+  const categoriaId = useProdutoStore((s) => s.categoriaId);
   const idRemovendo = useProdutoStore((s) => s.idRemovendo);
 
   const setPagina = useProdutoStore((s) => s.setPagina);
   const setIdRemovendo = useProdutoStore((s) => s.setIdRemovendo);
+
+  // Mensagem de confirmação ao adicionar um produto ao carrinho.
+  // Estado puramente local ao componente — não afeta carrinho/store nem
+  // é compartilhado com a página. Usa o mesmo padrão visual (.alert-info)
+  // já visto no ProdutoPage para manter a consistência.
+  const [msgCarrinho, setMsgCarrinho] = useState("");
   
   const tratarRemocao = (id: number) => {
     removerProduto(id, {
@@ -28,6 +39,8 @@ const TabelaDeProdutosPessimista = () => {
     mutate: removerProduto,
     error: errorRemoverProduto} = useRemoverProduto();
 
+  const { mutate: adicionarItem, isPending: adicionandoItem } = useAdicionarItemCarrinho();
+
   const {
     data: resultadoPaginado,
     isPending: recuperandoProdutos,
@@ -36,7 +49,8 @@ const TabelaDeProdutosPessimista = () => {
   } = useRecuperarProdutosComPaginacao({
     pagina: pagina.toString(),
     tamanho: tamanho.toString(),
-    nome: nome
+    nome: nome,
+    ...(categoriaId !== null ? { categoriaId: categoriaId.toString() } : {}),
   });
 
   if (errorRecuperarProdutos) throw errorRecuperarProdutos;
@@ -46,8 +60,24 @@ const TabelaDeProdutosPessimista = () => {
   const produtos = resultadoPaginado.itens;
 
   return (
-    <div className="overflow-x-auto mb-3">
-      <table className="w-full border-collapse">
+    <>
+      {/* Confirmação de item adicionado ao carrinho — pisca acima da tabela
+          e some quando o usuário muda de página ou adiciona outro. */}
+      {msgCarrinho && (
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-md border-2 border-orange-500 bg-orange-50 px-4 py-3 text-orange-800">
+          <span className="font-semibold">
+            <i className="bi bi-check-circle-fill me-2 text-orange-600"></i>
+            {msgCarrinho}
+          </span>
+          <Link to="/carrinho" className="btn-primary px-4 py-1.5 text-sm">
+            <i className="bi bi-cart3 me-1"></i>
+            Ir para o carrinho
+          </Link>
+        </div>
+      )}
+
+      <div className="overflow-x-auto mb-3">
+        <table className="w-full border-collapse">
         <thead>
           <tr className="border-b-2 border-gray-300 bg-gray-200">
             <th className="p-2 font-semibold">Id</th>
@@ -81,25 +111,49 @@ const TabelaDeProdutosPessimista = () => {
                 useGrouping: true
               })}</td>
               <td className="text-center p-2 w-[13%]">
-                <button onClick={() => tratarRemocao(produto.id!)} className="btn-danger px-4 py-1" type="button">
-                  <div className="flex items-center">
-                    {idRemovendo === produto.id ? 
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent me-2" />
-                      Removendo...
-                    </> : 
-                    <>
-                      <img className="me-1" src={databaseDelete} />
-                      Remover
-                    </>}
-                   </div>
-                </button>
+                {role === "ADMIN" ? (
+                  <button onClick={() => tratarRemocao(produto.id!)} className="btn-danger px-4 py-1" type="button">
+                    <div className="flex items-center">
+                      {idRemovendo === produto.id ?
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent me-2" />
+                        Removendo...
+                      </> :
+                      <>
+                        <img className="me-1" src={databaseDelete} />
+                        Remover
+                      </>}
+                     </div>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() =>
+                      adicionarItem(
+                        { produto, quantidade: 1 },
+                        {
+                          onSuccess: () =>
+                            setMsgCarrinho(`${produto.nome} adicionado ao carrinho!`),
+                          onError: () => setMsgCarrinho(""),
+                        },
+                      )
+                    }
+                    disabled={adicionandoItem || !produto.disponivel}
+                    className="btn-primary px-4 py-1"
+                    type="button"
+                  >
+                    <div className="flex items-center">
+                      <i className="bi bi-cart-plus me-1"></i>
+                      Comprar
+                    </div>
+                  </button>
+                )}
               </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+))}
+         </tbody>
+       </table>
+     </div>
+    </>
   );
 };
 export default TabelaDeProdutosPessimista;

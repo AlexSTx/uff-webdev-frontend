@@ -36,14 +36,15 @@ const HomePage = () => {
       </div>
 
       {/* Cards de categorias — atalhos visuais para a listagem de produtos.
-          Cada card linka para /produtos-sem-paginacao (não há rota por
-          categoria). Os ícones vêm do Bootstrap Icons, já importado no
+          Cada card linka para /produtos?categoria=X, e a página lê esse
+          query param pra buscar só produtos daquela categoria (ver
+          Etapa 3/4). Os ícones vêm do Bootstrap Icons, já importado no
           projeto via o NavBar. sm:grid-cols-3 liga em telas ≥ 640px. */}
       <div>
         <h3 className="mb-3 text-xl font-bold text-gray-800">Categorias</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Link
-            to="/produtos-sem-paginacao"
+            to="/produtos-com-paginacao?categoria=1"
             className="card flex items-center gap-3 transition hover:shadow-md"
           >
             <i className="bi bi-cpu text-3xl text-orange-500"></i>
@@ -53,7 +54,7 @@ const HomePage = () => {
             </div>
           </Link>
           <Link
-            to="/produtos-sem-paginacao"
+            to="/produtos-com-paginacao?categoria=2"
             className="card flex items-center gap-3 transition hover:shadow-md"
           >
             <i className="bi bi-gpu-card text-3xl text-orange-500"></i>
@@ -63,7 +64,7 @@ const HomePage = () => {
             </div>
           </Link>
           <Link
-            to="/produtos-sem-paginacao"
+            to="/produtos-com-paginacao?categoria=3"
             className="card flex items-center gap-3 transition hover:shadow-md"
           >
             <i className="bi bi-memory text-3xl text-orange-500"></i>

@@ -61,17 +61,10 @@ const NavBar = () => {
           <div className="hidden items-center space-x-4 md:flex">
             <NavLink
               className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
-              to="/produtos-sem-paginacao"
-            >
-              <i className="bi bi-card-list me-1"></i>
-              Produtos sem Paginação
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-com-paginacao"
             >
               <i className="bi bi-card-list me-1"></i>
-              Produtos com Paginação
+              Listar Produtos
             </NavLink>
             {tokenResponse.role === "ADMIN" && (
               <NavLink
@@ -155,19 +148,11 @@ const NavBar = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
-              to="/produtos-sem-paginacao"
-              onClick={() => setIsOpen(false)}
-            >
-              <i className="bi bi-card-list me-1"></i>
-              Produtos sem Paginação
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-com-paginacao"
               onClick={() => setIsOpen(false)}
             >
               <i className="bi bi-card-list me-1"></i>
-              Produtos com Paginação
+              Listar Produtos
             </NavLink>
             {tokenResponse.role === "ADMIN" && (
               <NavLink

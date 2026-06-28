@@ -5,6 +5,7 @@ const Paginacao = () => {
   const pagina = useProdutoStore((s) => s.pagina);
   const tamanho = useProdutoStore((s) => s.tamanho);
   const nome = useProdutoStore((s) => s.nome);
+  const categoriaId = useProdutoStore((s) => s.categoriaId);
   const idRemovendo = useProdutoStore((s) => s.idRemovendo);
 
   const setPagina = useProdutoStore((s) => s.setPagina);
@@ -17,7 +18,8 @@ const Paginacao = () => {
   } = useRecuperarProdutosComPaginacao({
     pagina: pagina.toString(),
     tamanho: tamanho.toString(),
-    nome: nome
+    nome: nome,
+    ...(categoriaId !== null ? { categoriaId: categoriaId.toString() } : {}),
   });
 
   const tratarPaginacao = (pagina: number) => {
