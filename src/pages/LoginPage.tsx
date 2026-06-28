@@ -171,9 +171,9 @@ const LoginPage = () => {
               {errors.senha && <p className="mt-1 text-sm font-semibold text-red-700">{errors.senha.message}</p>}
             </div>
             <div className="flex items-center justify-end">
-              <a tabIndex={-1} href="#" className="text-sm text-orange-600 hover:underline">
+              <Link to="/esqueceu-senha" className="text-sm text-orange-600 hover:underline">
                 Esqueceu a senha?
-              </a>
+              </Link>
             </div>
             <button
               type="submit"

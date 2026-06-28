@@ -4,6 +4,7 @@ import CadastroPage from "../pages/CadastroPage";
 import CarrinhoPage from "../pages/CarrinhoPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import ErrorPage from "../pages/ErrorPage";
+import EsqueceuSenhaPage from "../pages/EsqueceuSenhaPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import PagamentoPage from "../pages/PagamentoPage";
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
             {path: "produtos/:id", element: <ProdutoPage />},
             {path: "login", element: <LoginPage />},
             {path: "cadastro", element: <CadastroPage />},
+            {path: "esqueceu-senha", element: <EsqueceuSenhaPage />},
             // A página de erro já faz isso
             // {path: "*", element: <h5 className="text-xl text-center mt-3">404 - Página não encontrada</h5>}
         ]
