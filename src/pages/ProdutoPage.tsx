@@ -82,50 +82,40 @@ const ProdutoPage = () => {
       <hr className="mb-4" />
 
       {mensagem && (
-        <div className="mb-3 rounded border-2 border-green-600 bg-green-100 px-4 py-3 font-bold text-green-800">
+        <div className="alert-success">
           {mensagem}
         </div>
       )}
 
-      {/* 
-      Modos do Tailwindcss:
-      sm: 640px
-      md: 768px
-      lg: 1024px
-      xl: 1280px
-      2xl: 1536px */}
-
-      <div className="grid grid-cols-12">
+      <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 lg:col-span-4 xl:col-span-3">
-          {/* Para chegar nessa página o url foi /produtos/:id */}
-          {/* Sem a / abaixo seria enviada uma requisição para /produtos/abacate.png*/}
-          <img className="lg:hidden" src={"/" + produto.imagem} width="170px" />
+          <img className="lg:hidden rounded-lg shadow" src={"/" + produto.imagem} width="170px" />
           <img
-            className="hidden lg:block"
+            className="hidden lg:block rounded-lg shadow"
             src={"/" + produto.imagem}
             width="210px"
           />
         </div>
-        <div className="col-span-12 mb-2 lg:col-span-8 xl:col-span-9">
-          <div className="grid grid-cols-12">
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+        <div className="col-span-12 lg:col-span-8 xl:col-span-9">
+          <div className="grid grid-cols-12 gap-y-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Categoria
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
               {produto.categoria.nome}
             </div>
 
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Nome
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
               {produto.nome} ({produto.descricao})
             </div>
 
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Preço
             </div>
-            <div className="col-span-8 lg:col-span-9 xl:col-span-10">
+            <div className="col-span-8 text-lg font-semibold text-orange-600 lg:col-span-9 xl:col-span-10">
               {produto.preco!.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -133,21 +123,21 @@ const ProdutoPage = () => {
               })}
             </div>
 
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Estoque
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
               {produto.qtdEstoque}
             </div>
 
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Data Cadastro
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
               {dayjs(produto.dataCadastro).format("DD/MM/YYYY")}
             </div>
 
-            <div className="col-span-4 mb-1 font-bold lg:col-span-3 xl:col-span-2">
+            <div className="col-span-4 font-bold text-gray-700 lg:col-span-3 xl:col-span-2">
               Disponível
             </div>
             <div className="col-span-8 lg:col-span-9 xl:col-span-10">
@@ -156,16 +146,13 @@ const ProdutoPage = () => {
           </div>
         </div>
         {msgCarrinho && (
-          <div className="col-span-12 mb-3 rounded border-2 border-blue-600 bg-blue-100 px-4 py-2 font-semibold text-blue-800">
+          <div className="col-span-12 alert-info">
             {msgCarrinho}
           </div>
         )}
 
         {erroAdicao && (
-          <div
-            className="col-span-12 mb-3 flex items-start gap-3 rounded border-2 border-red-600 bg-red-100 px-4 py-3 text-red-900"
-            role="alert"
-          >
+          <div className="col-span-12 alert-error" role="alert">
             <i className="bi bi-x-octagon-fill mt-0.5"></i>
             <div>
               <p className="font-semibold">
@@ -196,9 +183,9 @@ const ProdutoPage = () => {
           </div>
         )}
 
-        <div className="col-span-12 mb-3 flex flex-wrap items-end gap-2">
+        <div className="col-span-12 mb-3 flex flex-wrap items-end gap-3">
           <label className="flex flex-col">
-            <span className="mb-1 font-bold">Quantidade</span>
+            <span className="mb-1 font-bold text-gray-700">Quantidade</span>
             <input
               type="number"
               min={1}
@@ -210,7 +197,7 @@ const ProdutoPage = () => {
                 setQtdCarrinho(Math.min(Math.max(1, v), limite));
               }}
               disabled={esgotado}
-              className="w-24 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-24 rounded-md border-2 border-gray-300 px-2 py-1.5 outline-none hover:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </label>
           <button
@@ -225,28 +212,28 @@ const ProdutoPage = () => {
         </div>
 
         {role === "ADMIN" && (
-          <>
-            <div className="col-span-4 me-3 xl:col-span-3">
+          <div className="col-span-12 flex gap-3">
+            <div className="w-1/2 lg:w-1/4 xl:w-1/6">
               <button
                 onClick={() => tratarEdicao(produto)}
                 disabled={removido}
-                className="btn-success w-full py-1"
+                className="btn-success w-full py-1.5"
                 type="button"
               >
                 Editar
               </button>
             </div>
-            <div className="col-span-4 me-3 xl:col-span-3">
+            <div className="w-1/2 lg:w-1/4 xl:w-1/6">
               <button
                 onClick={() => tratarRemocao(produto.id!)}
                 disabled={removido}
-                className="btn-danger w-full py-1"
+                className="btn-danger w-full py-1.5"
                 type="button"
               >
                 Remover
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </>

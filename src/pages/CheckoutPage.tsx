@@ -70,10 +70,7 @@ const CheckoutPage = () => {
       ) : (
         <>
           {itensEsgotados.length > 0 && (
-            <div
-              className="mb-4 flex items-start gap-3 rounded border-2 border-amber-500 bg-amber-50 px-4 py-3 text-amber-900"
-              role="alert"
-            >
+            <div className="alert-warning" role="alert">
               <i className="bi bi-exclamation-triangle-fill mt-0.5"></i>
               <div>
                 <p className="font-semibold">
@@ -114,10 +111,7 @@ const CheckoutPage = () => {
           )}
 
           {conflitoEstoque && (
-            <div
-              className="mb-4 flex items-start gap-3 rounded border-2 border-red-600 bg-red-100 px-4 py-3 text-red-900"
-              role="alert"
-            >
+            <div className="alert-error" role="alert">
               <i className="bi bi-x-octagon-fill mt-0.5"></i>
               <div>
                 <p className="font-semibold">
@@ -146,15 +140,15 @@ const CheckoutPage = () => {
             </div>
           )}
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b-2 border-gray-300">
-                  <th className="py-2 pe-4">Produto</th>
-                  <th className="py-2 pe-4">Preço unit.</th>
-                  <th className="py-2 pe-4">Quantidade</th>
-                  <th className="py-2 pe-4">Subtotal</th>
-                  <th className="py-2"></th>
+                <tr className="border-b-2 border-gray-300 bg-gray-100">
+                  <th className="table-header">Produto</th>
+                  <th className="table-header">Preço unit.</th>
+                  <th className="table-header">Quantidade</th>
+                  <th className="table-header">Subtotal</th>
+                  <th className="py-2 font-semibold"></th>
                 </tr>
               </thead>
               <tbody>
@@ -162,8 +156,8 @@ const CheckoutPage = () => {
                   const apagado = !item.disponivel || item.estoqueDisponivel === 0;
                   const limite = apagado ? 1 : item.estoqueDisponivel;
                   return (
-                    <tr key={item.id} className="border-b border-gray-200">
-                      <td className="py-2 pe-4">
+                    <tr key={item.id} className="border-b border-gray-200 transition hover:bg-orange-50 last:border-b-0">
+                      <td className="table-cell">
                         <div className="flex items-center gap-3">
                           <img
                             src={"/" + item.imagem}
@@ -176,11 +170,9 @@ const CheckoutPage = () => {
                           </span>
                         </div>
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
-                          <span className="font-semibold text-red-700">
-                            Esgotado
-                          </span>
+                          <span className="badge-danger">Esgotado</span>
                         ) : (
                           item.precoUnitario.toLocaleString("pt-BR", {
                             minimumFractionDigits: 2,
@@ -188,7 +180,7 @@ const CheckoutPage = () => {
                           })
                         )}
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
                           <span className="text-gray-500">—</span>
                         ) : (
@@ -206,11 +198,11 @@ const CheckoutPage = () => {
                                 ),
                               })
                             }
-                            className="w-20 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500"
+                            className="input-sm"
                           />
                         )}
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
                           <span className="text-gray-500">—</span>
                         ) : (
@@ -237,8 +229,8 @@ const CheckoutPage = () => {
             </table>
           </div>
 
-          <div className="mt-6">
-            <h2 className="mb-2 font-semibold">Forma de pagamento</h2>
+          <div className="mt-6 card">
+            <h2 className="mb-3 font-semibold">Forma de pagamento</h2>
             <select
               value={formaPagamento}
               onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
@@ -252,7 +244,7 @@ const CheckoutPage = () => {
             </select>
           </div>
 
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-6 flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4">
             <div className="text-lg font-semibold">
               Total:{" "}
               {total.toLocaleString("pt-BR", {
@@ -263,7 +255,7 @@ const CheckoutPage = () => {
             <button
               onClick={confirmar}
               disabled={criando || itensEsgotados.length > 0 || itensParciais.length > 0}
-              className="btn-primary px-4 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-primary px-6 py-2 disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               title={
                 itensEsgotados.length > 0

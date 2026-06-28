@@ -42,10 +42,7 @@ const CarrinhoPage = () => {
       ) : (
         <>
           {itensEsgotados.length > 0 && (
-            <div
-              className="mb-4 flex items-start gap-3 rounded border-2 border-amber-500 bg-amber-50 px-4 py-3 text-amber-900"
-              role="alert"
-            >
+            <div className="alert-warning" role="alert">
               <i className="bi bi-exclamation-triangle-fill mt-0.5"></i>
               <div>
                 <p className="font-semibold">
@@ -86,33 +83,27 @@ const CarrinhoPage = () => {
             </div>
           )}
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b-2 border-gray-300">
-                  <th className="py-2 pe-4">Produto</th>
-                  <th className="py-2 pe-4">Preço unit.</th>
-                  <th className="py-2 pe-4">Quantidade</th>
-                  <th className="py-2 pe-4">Subtotal</th>
-                  <th className="py-2"></th>
+                <tr className="border-b-2 border-gray-300 bg-gray-100">
+                  <th className="table-header">Produto</th>
+                  <th className="table-header">Preço unit.</th>
+                  <th className="table-header">Quantidade</th>
+                  <th className="table-header">Subtotal</th>
+                  <th className="py-2 font-semibold"></th>
                 </tr>
               </thead>
               <tbody>
                 {itensCarrinho.map((item) => {
-                  // Itens esgotados ficam visualmente "apagados": imagem
-                  // cinza, texto riscado, sem input de quantidade e com um
-                  // selo "Esgotado" no lugar do preço unitário.
                   const apagado = !item.disponivel || item.estoqueDisponivel === 0;
-                  // Limite real de unidades que podem ser pedidas para este
-                  // item no estado atual. Se apagado, o input some e não
-                  // importa; se disponível, clampamos ao estoque.
                   const limite = apagado ? 1 : item.estoqueDisponivel;
                   return (
                     <tr
                       key={item.id}
-                      className="border-b border-gray-200"
+                      className="border-b border-gray-200 transition hover:bg-orange-50 last:border-b-0"
                     >
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         <div className="flex items-center gap-3">
                           <Link to={`/produtos/${item.produtoId}`}>
                             <img
@@ -130,11 +121,9 @@ const CarrinhoPage = () => {
                           </Link>
                         </div>
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
-                          <span className="font-semibold text-red-700">
-                            Esgotado
-                          </span>
+                          <span className="badge-danger">Esgotado</span>
                         ) : (
                           item.precoUnitario.toLocaleString("pt-BR", {
                             minimumFractionDigits: 2,
@@ -142,7 +131,7 @@ const CarrinhoPage = () => {
                           })
                         )}
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
                           <span className="text-gray-500">—</span>
                         ) : (
@@ -160,11 +149,11 @@ const CarrinhoPage = () => {
                                 ),
                               })
                             }
-                            className="w-20 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500"
+                            className="input-sm"
                           />
                         )}
                       </td>
-                      <td className="py-2 pe-4">
+                      <td className="table-cell">
                         {apagado ? (
                           <span className="text-gray-500">—</span>
                         ) : (

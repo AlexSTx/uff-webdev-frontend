@@ -44,10 +44,10 @@ const Paginacao = () => {
                 disabled={pagina === 0}
                 onClick={() => tratarPaginacao(pagina - 1)}
                 className={
-                  "rounded-l-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-200 " +
+"rounded-l-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-100 " +
                   (pagina === 0
                     ? "cursor-not-allowed bg-gray-300 opacity-50"
-                    : "cursor-pointer bg-white text-green-700")
+                    : "cursor-pointer bg-white text-orange-600")
                 }
               >
                 Anterior
@@ -62,8 +62,8 @@ const Paginacao = () => {
                   className={
                     "cursor-pointer border px-4 py-2 font-semibold " +
                     (pagina === page
-                      ? "border-green-800 bg-green-700 text-white"
-                      : "border-gray-300 bg-white text-green-600 hover:bg-gray-100")
+                      ? "border-orange-700 bg-orange-500 text-white"
+                      : "border-gray-300 bg-white text-orange-600 hover:bg-gray-100")
                   }
                 >
                   {page + 1}
@@ -77,10 +77,10 @@ const Paginacao = () => {
                 disabled={pagina === totalDePaginas - 1}
                 onClick={() => tratarPaginacao(pagina + 1)}
                 className={
-                  "rounded-r-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-200 " +
+                  "rounded-r-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-100 " +
                   (pagina === totalDePaginas - 1
                     ? "cursor-not-allowed bg-gray-300 opacity-50"
-                    : "cursor-pointer bg-white text-green-700")
+                    : "cursor-pointer bg-white text-orange-600")
                 }
               >
                 Próxima
@@ -89,7 +89,7 @@ const Paginacao = () => {
           </ul>
         </nav>
         {atualizandoProdutos && idRemovendo === null && (
-          <span className="text-sm text-green-700">Atualizando...</span>
+          <span className="text-sm text-orange-600">Atualizando...</span>
         )}
       </div>
     </div>

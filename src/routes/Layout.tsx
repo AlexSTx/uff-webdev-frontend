@@ -3,12 +3,12 @@ import NavBar from "../components/NavBar"
 
 const Layout = () => {
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <div className="mx-3 md:mx-10 lg:mx-20">
+      <main className="mx-3 pb-8 md:mx-10 lg:mx-20">
         <Outlet />
-      </div>
-    </>
+      </main>
+    </div>
   )
 }
 export default Layout

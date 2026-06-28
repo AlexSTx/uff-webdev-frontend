@@ -117,44 +117,36 @@ const ProdutoForm = () => {
     if (errorAlterarProduto) throw errorAlterarProduto;
     
   return (
-    <form onSubmit={handleSubmit(submit)} className="mt-6" autoComplete="off">
+    <form onSubmit={handleSubmit(submit)} className="card mt-4" autoComplete="off">
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="nome"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Nome
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
               <input
                 {...register("nome")}
                 type="text"
-                // id="nome"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               />
-              {errors.nome && <p className="font-semibold text-sm text-red-700">{errors.nome.message}</p>}
+              {errors.nome && <p className="mt-1 text-sm font-semibold text-red-700">{errors.nome.message}</p>}
             </div>
           </div>
         </div>  
 
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="descricao"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Descrição
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
               <input
                 {...register("descricao")}
                 type="text"
-                // id="descricao"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               />
-              {errors.descricao && <p className="font-semibold text-sm text-red-700">{errors.descricao.message}</p>}
+              {errors.descricao && <p className="mt-1 text-sm font-semibold text-red-700">{errors.descricao.message}</p>}
             </div>
           </div>
         </div>  
@@ -163,24 +155,20 @@ const ProdutoForm = () => {
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="categoria"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Categoria
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
               <select
                 {...register("categoria", { valueAsNumber: true })}
-                // id="categoria"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               >
                 <option value="0">Selecione uma categoria</option>
-                <option value="1">Fruta</option>
-                <option value="2">Legume</option>
-                <option value="3">Verdura</option>
+                <option value="1">Processador</option>
+                <option value="2">Placa de Vídeo</option>
+                <option value="3">Memória RAM</option>
               </select>
-              {errors.categoria && <p className="font-semibold text-sm text-red-700">{errors.categoria.message}</p>}
+              {errors.categoria && <p className="mt-1 text-sm font-semibold text-red-700">{errors.categoria.message}</p>}
             </div>
           </div>
         </div>
@@ -189,10 +177,7 @@ const ProdutoForm = () => {
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="preco"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Preço
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
@@ -201,20 +186,16 @@ const ProdutoForm = () => {
                 type="number"
                 step="0.01"
                 min="0.10"
-                // id="preco"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               />
-              {errors.preco && <p className="font-semibold text-sm text-red-700">{errors.preco.message}</p>}
+              {errors.preco && <p className="mt-1 text-sm font-semibold text-red-700">{errors.preco.message}</p>}
             </div>
           </div>
         </div>  
 
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="qtd_estoque"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Estoque
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
@@ -222,10 +203,9 @@ const ProdutoForm = () => {
                 {...register("qtd_estoque")}
                 type="number"
                 min="0"
-                // id="qtd_estoque"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               />
-              {errors.qtd_estoque && <p className="font-semibold text-sm text-red-700">{errors.qtd_estoque.message}</p>}
+              {errors.qtd_estoque && <p className="mt-1 text-sm font-semibold text-red-700">{errors.qtd_estoque.message}</p>}
             </div>
           </div>
         </div>  
@@ -234,20 +214,16 @@ const ProdutoForm = () => {
       <div className="grid grid-cols-12 gap-1 lg:gap-6">
         <div className="col-span-12 lg:col-span-6 mb-1 lg:mb-3">
           <div className="grid grid-cols-12">
-            <label
-              // htmlFor="imagem"
-              className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold"
-            >
+            <label className="col-span-12 lg:col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
               Imagem
             </label>
             <div className="col-span-12 lg:col-span-9 xl:col-span-10">
               <input
                 {...register("imagem")}
                 type="text"
-                // id="imagem"
-                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500"
+                className="w-full rounded-md border-2 border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 outline-none hover:border-gray-500 focus:border-gray-800"
               />
-              {errors.imagem && <p className="font-semibold text-sm text-red-700">{errors.imagem.message}</p>}
+              {errors.imagem && <p className="mt-1 text-sm font-semibold text-red-700">{errors.imagem.message}</p>}
             </div>
           </div>
         </div>  
@@ -258,12 +234,9 @@ const ProdutoForm = () => {
               <input
                 {...register("disponivel")}
                 type="checkbox"
-                // id="disponivel"
                 className="form-checkbox mr-2 h-4 w-4 text-blue-600"
               />
-              <label 
-                // htmlFor="disponivel" 
-                className="col-span-3 xl:col-span-2 mb-1 flex items-center font-bold">
+              <label className="col-span-3 xl:col-span-2 mb-1 flex items-center font-bold text-gray-700">
                 Disponível?
               </label>
             </div>

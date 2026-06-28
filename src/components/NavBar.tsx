@@ -1,7 +1,6 @@
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import hortifruti from "../assets/hortifruti.png";
 import type { Produto } from "../interfaces/Produto";
 import useProdutoStore from "../store/ProdutoStore";
 import useTokenStore from "../store/TokenStore";
@@ -29,15 +28,15 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="mb-6 bg-gray-100 py-4">
+    <nav className="mb-6 border-b border-gray-200 bg-gray-50 py-4 shadow-sm">
       <div className="mx-3 md:mx-10 lg:mx-20">
         <div className="flex justify-between">
           <div className="flex items-center space-x-4">
             <NavLink to="/" onClick={() => setIsOpen(false)}>
-              <img src={hortifruti} width="45px" />
+              <span className="text-2xl font-extrabold tracking-tight text-orange-500">Kachow!</span>
             </NavLink>
             <NavLink
-              className="hidden text-gray-700 hover:text-black md:block"
+              className={({ isActive }) => "hidden md:block text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               aria-current="page"
               to="/"
             >
@@ -45,14 +44,14 @@ const NavBar = () => {
               Home
             </NavLink>
             <NavLink
-              className="hidden text-gray-700 hover:text-black md:block"
+              className={({ isActive }) => "hidden md:block text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/carrinho"
             >
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
             </NavLink>
             <NavLink
-              className="hidden text-gray-700 hover:text-black md:block"
+              className={({ isActive }) => "hidden md:block text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/favoritos"
             >
               <i className="bi bi-heart me-1"></i>
@@ -61,14 +60,14 @@ const NavBar = () => {
           </div>
           <div className="hidden items-center space-x-4 md:flex">
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-sem-paginacao"
             >
               <i className="bi bi-card-list me-1"></i>
               Produtos sem Paginação
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-com-paginacao"
             >
               <i className="bi bi-card-list me-1"></i>
@@ -77,7 +76,7 @@ const NavBar = () => {
             {tokenResponse.role === "ADMIN" && (
               <NavLink
                 onClick={() => setProdutoSelecionado({} as Produto)}
-                className="text-gray-700 hover:text-black"
+                className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
                 to="/cadastrar-produto"
               >
                 <i className="bi bi-database-add me-1"></i>
@@ -85,7 +84,7 @@ const NavBar = () => {
               </NavLink>
             )}
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/login"
               onClick={() => {
                 if (tokenResponse.idUsuario > 0) efetuarLogout();
@@ -107,11 +106,10 @@ const NavBar = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={
-              "rounded bg-gray-400 p-2 text-white md:hidden " +
-              (isOpen ? "border-2 border-gray-800" : "border border-gray-400")
+              "rounded-lg bg-gray-300 p-2 text-gray-700 md:hidden hover:bg-gray-400 " +
+              (isOpen ? "bg-gray-400" : "")
             }
           >
-            {/* Use um ícone de hambúrguer aqui */}
             <svg
               className="h-6 w-6"
               fill="none"
@@ -129,9 +127,9 @@ const NavBar = () => {
           </button>
         </div>
         {isOpen && (
-          <div className="mt-4 flex flex-col space-y-2 md:hidden">
+          <div className="mt-4 flex flex-col space-y-2 rounded-lg border border-gray-200 bg-white p-3 shadow md:hidden">
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               aria-current="page"
               to="/"
               onClick={() => setIsOpen(false)}
@@ -140,7 +138,7 @@ const NavBar = () => {
               Home
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/carrinho"
               onClick={() => setIsOpen(false)}
             >
@@ -148,7 +146,7 @@ const NavBar = () => {
               Carrinho
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/favoritos"
               onClick={() => setIsOpen(false)}
             >
@@ -156,7 +154,7 @@ const NavBar = () => {
               Favoritos
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-sem-paginacao"
               onClick={() => setIsOpen(false)}
             >
@@ -164,7 +162,7 @@ const NavBar = () => {
               Produtos sem Paginação
             </NavLink>
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-com-paginacao"
               onClick={() => setIsOpen(false)}
             >
@@ -173,7 +171,7 @@ const NavBar = () => {
             </NavLink>
             {tokenResponse.role === "ADMIN" && (
               <NavLink
-                className="text-gray-700 hover:text-black"
+                className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
                 to="/cadastrar-produto"
                 onClick={() => {
                   setIsOpen(false);
@@ -185,7 +183,7 @@ const NavBar = () => {
               </NavLink>
             )}
             <NavLink
-              className="text-gray-700 hover:text-black"
+              className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/login"
               onClick={() => {
                 setIsOpen(false);

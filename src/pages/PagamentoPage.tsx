@@ -137,24 +137,26 @@ const PagamentoPage = () => {
       <h1 className="mb-1 text-xl font-semibold">Pagamento</h1>
       <hr className="mb-4" />
 
-      <div className="mb-4">
-        <p>
-          Pedido <strong>#{pedido.id}</strong>
-        </p>
-        <p>
-          Forma de pagamento:{" "}
-          <strong>
-            {FORMAS_PAGAMENTO_LABEL[pedido.formaPagamento] ?? pedido.formaPagamento}
-          </strong>
-        </p>
-        <p>
-          Total:{" "}
-          {pedido.valorTotal.toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </p>
-        <p className="mt-2 text-sm text-gray-600">
+      <div className="card mb-6">
+        <div className="space-y-2">
+          <p className="text-lg">
+            Pedido <strong>#{pedido.id}</strong>
+          </p>
+          <p>
+            Forma de pagamento:{" "}
+            <strong>
+              {FORMAS_PAGAMENTO_LABEL[pedido.formaPagamento] ?? pedido.formaPagamento}
+            </strong>
+          </p>
+          <p className="text-xl font-bold text-orange-600">
+            Total:{" "}
+            {pedido.valorTotal.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </p>
+        </div>
+        <p className="mt-3 text-sm text-gray-600">
           Clique abaixo para confirmar o pagamento. A confirmação do pagamento fica disponível por {PRAZO_MINUTOS} minutos após o fechamento do pedido.
         </p>
       </div>

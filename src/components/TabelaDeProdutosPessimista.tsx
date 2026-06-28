@@ -47,40 +47,40 @@ const TabelaDeProdutosPessimista = () => {
 
   return (
     <div className="overflow-x-auto mb-3">
-      <table className="w-full border-2 border-gray-400">
+      <table className="w-full border-collapse">
         <thead>
-          <tr className="border-2 border-gray-400 bg-gray-300">
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Id</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Imagem</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Categoria</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Nome</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Disponível</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Data de Cadastro</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Preço</th>
-            <th className="border-r border-r-gray-200 p-1.5 font-semibold">Ação</th>
+          <tr className="border-b-2 border-gray-300 bg-gray-200">
+            <th className="p-2 font-semibold">Id</th>
+            <th className="p-2 font-semibold">Imagem</th>
+            <th className="p-2 font-semibold">Categoria</th>
+            <th className="p-2 font-semibold">Nome</th>
+            <th className="p-2 font-semibold">Disponível</th>
+            <th className="p-2 font-semibold">Data de Cadastro</th>
+            <th className="p-2 font-semibold">Preço</th>
+            <th className="p-2 font-semibold">Ação</th>
           </tr>
         </thead>
         <tbody>
           {produtos.map((produto, index) => (
-            <tr key={produto.id} className={"border border-gray-200 " + (index % 2 === 0 ? "bg-white" : "bg-gray-100")}>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[8%]">{produto.id}</td>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[10%]">
+            <tr key={produto.id} className={"border-b border-gray-200 transition hover:bg-orange-50 " + (index % 2 === 0 ? "bg-white" : "bg-gray-50")}>
+              <td className="text-center p-2 w-[8%]">{produto.id}</td>
+              <td className="text-center p-2 w-[10%]">
                 <div className="flex justify-center">
                   <img src={produto.imagem} width="40px" />
                 </div>
               </td>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.categoria.nome}</td>
-              <td className="border-r border-r-gray-200 ps-2 py-1 w-[20%]">
-                <Link className="font-bold text-green-700" to={"/produtos/" + produto.id}>{produto.nome}</Link> 
+              <td className="text-center p-2 w-[13%]">{produto.categoria.nome}</td>
+              <td className="ps-2 p-2 w-[20%]">
+                <Link className="font-bold text-orange-600 hover:underline" to={"/produtos/" + produto.id}>{produto.nome}</Link> 
               </td>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{produto.disponivel ? "Sim" : "Não"}</td>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</td>
-              <td className="border-r border-r-gray-200 text-end pe-2 py-1 w-[10%]">{produto.preco!.toLocaleString("pt-BR", {
+              <td className="text-center p-2 w-[13%]">{produto.disponivel ? "Sim" : "Não"}</td>
+              <td className="text-center p-2 w-[13%]">{dayjs(produto.dataCadastro).format("DD/MM/YYYY")}</td>
+              <td className="text-end pe-2 p-2 w-[10%]">{produto.preco!.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
                 useGrouping: true
               })}</td>
-              <td className="border-r border-r-gray-200 text-center py-1 w-[13%]">
+              <td className="text-center p-2 w-[13%]">
                 <button onClick={() => tratarRemocao(produto.id!)} className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                     {idRemovendo === produto.id ? 
