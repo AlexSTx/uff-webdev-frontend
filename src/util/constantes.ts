@@ -5,3 +5,5 @@ export const URL_PRODUTOS = "/produtos";
 export const URL_AUTENTICACAO = "/autenticacao";
 
 export const URL_CARRINHO = "/carrinho";
+
+export const URL_PEDIDOS = "/pedidos";

@@ -1,10 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import CadastrarProdutoPage from "../pages/CadastrarProdutoPage";
 import CarrinhoPage from "../pages/CarrinhoPage";
+import CheckoutPage from "../pages/CheckoutPage";
 import ErrorPage from "../pages/ErrorPage";
 import FavoritosPage from "../pages/FavoritosPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
+import PagamentoPage from "../pages/PagamentoPage";
 import ProdutoPage from "../pages/ProdutoPage";
 import ProdutosComPaginacaoPage from "../pages/ProdutosComPaginacaoPage";
 import Layout from "./Layout";
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {path: "favoritos", element: <FavoritosPage />},
+            {path: "checkout", element: <CheckoutPage />},
+            {path: "pagamento/:id", element: <PagamentoPage />},
         ]
     },
     {

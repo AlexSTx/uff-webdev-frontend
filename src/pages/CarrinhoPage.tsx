@@ -109,12 +109,17 @@ const CarrinhoPage = () => {
             >
               Limpar carrinho
             </button>
-            <div className="text-lg font-semibold">
-              Total:{" "}
-              {total.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+            <div className="flex items-center gap-4">
+              <div className="text-lg font-semibold">
+                Total:{" "}
+                {total.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </div>
+              <Link to="/checkout" className="btn-primary px-4 py-1">
+                Fechar pedido
+              </Link>
             </div>
           </div>
         </>
