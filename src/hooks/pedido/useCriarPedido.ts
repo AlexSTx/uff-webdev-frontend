@@ -20,6 +20,13 @@ const useCriarPedido = () => {
       queryClient.invalidateQueries({ queryKey: ["carrinho"], exact: false });
       queryClient.invalidateQueries({ queryKey: ["pedidos"], exact: false });
     },
+    // Em caso de 409 (EstoqueInsuficienteException), o backend não mutou
+    // nada, mas o estoque pode ter mudado entre o GET do carrinho e o POST.
+    // Invalida o carrinho para que um novo GET traga o disponivel atualizado
+    // e a UI destaque os itens problemáticos.
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ["carrinho"], exact: false });
+    },
   });
 };
 export default useCriarPedido;
