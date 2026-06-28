@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import z from "zod";
 import type { TokenResponse } from "../interfaces/TokenResponse";
 import type { UsuarioLogin } from "../interfaces/UsuarioLogin";
@@ -171,9 +171,9 @@ const LoginPage = () => {
               {errors.senha && <p className="mt-1 text-sm font-semibold text-red-700">{errors.senha.message}</p>}
             </div>
             <div className="flex items-center justify-end">
-              <a tabIndex={-1} href="#" className="text-sm text-orange-600 hover:underline">
+              <Link to="/esqueceu-senha" className="text-sm text-orange-600 hover:underline">
                 Esqueceu a senha?
-              </a>
+              </Link>
             </div>
             <button
               type="submit"
@@ -184,9 +184,9 @@ const LoginPage = () => {
           </form>
           <p className="text-center text-sm text-gray-500">
             <span className="me-1">Não tem conta?</span>
-            <a href="#" className="text-orange-600 hover:underline">
+            <Link to="/cadastro" className="text-orange-600 hover:underline">
               Cadastre-se
-            </a>
+            </Link>
           </p>
         </div>
       </div>
