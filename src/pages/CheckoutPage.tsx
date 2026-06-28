@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRecuperarCarrinho from "../hooks/carrinho/useRecuperarCarrinho";
 import useCriarPedido from "../hooks/pedido/useCriarPedido";
+import useRemoverItemCarrinho from "../hooks/carrinho/useRemoverItemCarrinho";
+import useAlterarItemCarrinho from "../hooks/carrinho/useAlterarItemCarrinho";
 import type { FormaPagamento } from "../interfaces/Pedido";
 import isErrorResponse from "../util/isErrorResponse";
 
@@ -16,6 +18,8 @@ const CheckoutPage = () => {
   const { data: itens, isPending: recuperando, error } = useRecuperarCarrinho();
   const { mutate: criarPedido, isPending: criando, error: erroCheckout } =
     useCriarPedido();
+  const { mutate: removerItem, isPending: removendo } = useRemoverItemCarrinho();
+  const { mutate: alterarQuantidade } = useAlterarItemCarrinho();
   const navigate = useNavigate();
   const [formaPagamento, setFormaPagamento] =
     useState<FormaPagamento>("CARTAO_CREDITO");
@@ -24,7 +28,15 @@ const CheckoutPage = () => {
   if (recuperando) return <p className="text-lg">Recuperando carrinho...</p>;
 
   const itensCarrinho = itens ?? [];
-  const itensEsgotados = itensCarrinho.filter((i) => !i.disponivel);
+  const itensEsgotados = itensCarrinho.filter(
+    (i) => !i.disponivel || i.estoqueDisponivel === 0,
+  );
+  const itensParciais = itensCarrinho.filter(
+    (i) =>
+      i.disponivel &&
+      i.estoqueDisponivel > 0 &&
+      i.estoqueDisponivel < i.quantidade,
+  );
   const total = itensCarrinho
     .filter((i) => i.disponivel)
     .reduce((acc, i) => acc + i.subtotal, 0);
@@ -69,7 +81,33 @@ const CheckoutPage = () => {
                 </p>
                 <p className="text-sm">
                   Eles aparecem apagados abaixo. Remova-os ou ajuste as
-                  quantidades no carrinho para continuar.
+                  quantidades para continuar.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {itensParciais.length > 0 && (
+            <div
+              className="mb-4 flex items-start gap-3 rounded border-2 border-orange-500 bg-orange-50 px-4 py-3 text-orange-900"
+              role="alert"
+            >
+              <i className="bi bi-exclamation-circle-fill mt-0.5"></i>
+              <div>
+                <p className="font-semibold">
+                  A quantidade pedida de alguns itens ultrapassa o estoque
+                  disponível.
+                </p>
+                <ul className="mt-1 list-inside list-disc text-sm">
+                  {itensParciais.map((i) => (
+                    <li key={i.id}>
+                      {i.nome} — pedido: {i.quantidade}, disponível:{" "}
+                      {i.estoqueDisponivel}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-1 text-sm">
+                  Ajuste a quantidade de cada item ao limite para prosseguir.
                 </p>
               </div>
             </div>
@@ -87,7 +125,6 @@ const CheckoutPage = () => {
                 </p>
                 <ul className="mt-1 list-inside list-disc text-sm">
                   {Object.values(conflitoEstoque.map).map((descr) => {
-                    // descr no formato "Cereja: pedido=5, disponivel=0"
                     const m = descr.match(
                       /^(?<nome>[^:]+):\s*pedido=(?<ped>\d+),\s*disponivel=(?<disp>\d+)$/,
                     );
@@ -103,8 +140,7 @@ const CheckoutPage = () => {
                   })}
                 </ul>
                 <p className="mt-1 text-sm">
-                  Reveja os itens acima e ajuste as quantidades no carrinho
-                  para continuar.
+                  Reveja os itens acima e ajuste as quantidades para continuar.
                 </p>
               </div>
             </div>
@@ -118,19 +154,15 @@ const CheckoutPage = () => {
                   <th className="py-2 pe-4">Preço unit.</th>
                   <th className="py-2 pe-4">Quantidade</th>
                   <th className="py-2 pe-4">Subtotal</th>
+                  <th className="py-2"></th>
                 </tr>
               </thead>
               <tbody>
                 {itensCarrinho.map((item) => {
-                  const apagado = !item.disponivel;
+                  const apagado = !item.disponivel || item.estoqueDisponivel === 0;
+                  const limite = apagado ? 1 : item.estoqueDisponivel;
                   return (
-                    <tr
-                      key={item.id}
-                      className={
-                        "border-b border-gray-200" +
-                        (apagado ? " opacity-50" : "")
-                      }
-                    >
+                    <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-2 pe-4">
                         <div className="flex items-center gap-3">
                           <img
@@ -160,7 +192,22 @@ const CheckoutPage = () => {
                         {apagado ? (
                           <span className="text-gray-500">—</span>
                         ) : (
-                          item.quantidade
+                          <input
+                            type="number"
+                            min={1}
+                            max={limite}
+                            value={item.quantidade}
+                            onChange={(e) =>
+                              alterarQuantidade({
+                                id: item.id,
+                                quantidade: Math.min(
+                                  Math.max(1, Number(e.target.value)),
+                                  limite,
+                                ),
+                              })
+                            }
+                            className="w-20 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500"
+                          />
                         )}
                       </td>
                       <td className="py-2 pe-4">
@@ -172,6 +219,16 @@ const CheckoutPage = () => {
                             maximumFractionDigits: 2,
                           })
                         )}
+                      </td>
+                      <td className="py-2">
+                        <button
+                          onClick={() => removerItem(item.id)}
+                          disabled={removendo}
+                          className="btn-danger px-3 py-1"
+                          type="button"
+                        >
+                          Remover
+                        </button>
                       </td>
                     </tr>
                   );
@@ -205,13 +262,15 @@ const CheckoutPage = () => {
             </div>
             <button
               onClick={confirmar}
-              disabled={criando || itensEsgotados.length > 0}
+              disabled={criando || itensEsgotados.length > 0 || itensParciais.length > 0}
               className="btn-primary px-4 py-1 disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               title={
                 itensEsgotados.length > 0
                   ? "Remova os itens esgotados para continuar"
-                  : undefined
+                  : itensParciais.length > 0
+                    ? "Ajuste as quantidades acima do limite para continuar"
+                    : undefined
               }
             >
               {criando ? "Confirmando..." : "Confirmar pedido"}
