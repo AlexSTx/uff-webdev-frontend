@@ -3,12 +3,20 @@ import useRecuperarCarrinho from "../hooks/carrinho/useRecuperarCarrinho";
 import useRemoverItemCarrinho from "../hooks/carrinho/useRemoverItemCarrinho";
 import useAlterarItemCarrinho from "../hooks/carrinho/useAlterarItemCarrinho";
 import useLimparCarrinho from "../hooks/carrinho/useLimparCarrinho";
+import useEstoqueCarrinhoWS from "../hooks/carrinho/useEstoqueCarrinhoWS";
 
 const CarrinhoPage = () => {
   const { data: itens, isPending: recuperando, error } = useRecuperarCarrinho();
   const { mutate: removerItem, isPending: removendo } = useRemoverItemCarrinho();
   const { mutate: alterarQuantidade } = useAlterarItemCarrinho();
   const { mutate: limpar, isPending: limpando } = useLimparCarrinho();
+
+  // Assina o estoque dos produtos no carrinho para refletir, em tempo real,
+  // quando um item esgota (outro usuário fechou o pedido) ou é reposto
+  // (pedido cancelado/expirado). Chamado antes dos early returns para manter
+  // a ordem dos hooks estável; com o carrinho vazio o array fica vazio e
+  // nenhuma conexão é aberta.
+  useEstoqueCarrinhoWS((itens ?? []).map((i) => i.produtoId));
 
   if (error) throw error;
   if (recuperando) return <p className="text-lg">Recuperando carrinho...</p>;
