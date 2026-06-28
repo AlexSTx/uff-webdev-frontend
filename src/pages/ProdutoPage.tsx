@@ -42,6 +42,8 @@ const ProdutoPage = () => {
 
   const { mutate: adicionarItem, isPending: adicionandoItem } = useAdicionarItemCarrinho();
 
+  const esgotado = (produto?.qtdEstoque ?? 0) <= 0;
+
   const tratarAdicionarCarrinho = () => {
     adicionarItem(
       { produto: produto!, quantidade: qtdCarrinho },
@@ -154,18 +156,23 @@ const ProdutoPage = () => {
               min={1}
               max={produto.qtdEstoque ?? undefined}
               value={qtdCarrinho}
-              onChange={(e) => setQtdCarrinho(Math.max(1, Number(e.target.value)))}
-              className="w-24 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500"
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                const limite = produto.qtdEstoque ?? Number.POSITIVE_INFINITY;
+                setQtdCarrinho(Math.min(Math.max(1, v), limite));
+              }}
+              disabled={esgotado}
+              className="w-24 rounded-md border-2 border-gray-300 px-2 py-1 outline-none hover:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </label>
           <button
             onClick={tratarAdicionarCarrinho}
-            disabled={removido || !produto.disponivel || adicionandoItem}
-            className="btn-primary px-4 py-2"
+            disabled={removido || !produto.disponivel || esgotado || adicionandoItem}
+            className="btn-primary px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-400"
             type="button"
           >
             <i className="bi bi-cart-plus me-1"></i>
-            Adicionar ao Carrinho
+            {esgotado ? "Esgotado" : "Adicionar ao Carrinho"}
           </button>
         </div>
 
