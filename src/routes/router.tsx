@@ -5,6 +5,7 @@ import CarrinhoPage from "../pages/CarrinhoPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import ErrorPage from "../pages/ErrorPage";
 import EsqueceuSenhaPage from "../pages/EsqueceuSenhaPage";
+import HistoricoPedidosPage from "../pages/HistoricoPedidosPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import PagamentoPage from "../pages/PagamentoPage";
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
         children: [
             {path: "checkout", element: <CheckoutPage />},
             {path: "pagamento/:id", element: <PagamentoPage />},
+            {path: "meus-pedidos", element: <HistoricoPedidosPage />},
         ]
     },
     {

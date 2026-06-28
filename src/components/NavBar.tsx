@@ -50,6 +50,15 @@ const NavBar = () => {
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
             </NavLink>
+            {tokenResponse.idUsuario > 0 && (
+              <NavLink
+                className={({ isActive }) => "hidden md:block text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
+                to="/meus-pedidos"
+              >
+                <i className="bi bi-bag-check me-1"></i>
+                Meus Pedidos
+              </NavLink>
+            )}
           </div>
           <div className="hidden items-center space-x-4 md:flex">
             <NavLink
@@ -138,6 +147,16 @@ const NavBar = () => {
               <i className="bi bi-cart3 me-1"></i>
               Carrinho
             </NavLink>
+            {tokenResponse.idUsuario > 0 && (
+              <NavLink
+                className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
+                to="/meus-pedidos"
+                onClick={() => setIsOpen(false)}
+              >
+                <i className="bi bi-bag-check me-1"></i>
+                Meus Pedidos
+              </NavLink>
+            )}
             <NavLink
               className={({ isActive }) => "text-gray-700 hover:text-orange-500 " + (isActive ? "font-semibold text-orange-600" : "")}
               to="/produtos-sem-paginacao"
