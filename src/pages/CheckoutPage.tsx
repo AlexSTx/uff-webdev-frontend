@@ -4,6 +4,7 @@ import useRecuperarCarrinho from "../hooks/carrinho/useRecuperarCarrinho";
 import useCriarPedido from "../hooks/pedido/useCriarPedido";
 import useRemoverItemCarrinho from "../hooks/carrinho/useRemoverItemCarrinho";
 import useAlterarItemCarrinho from "../hooks/carrinho/useAlterarItemCarrinho";
+import useEstoqueCarrinhoWS from "../hooks/carrinho/useEstoqueCarrinhoWS";
 import type { FormaPagamento } from "../interfaces/Pedido";
 import isErrorResponse from "../util/isErrorResponse";
 
@@ -23,6 +24,13 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const [formaPagamento, setFormaPagamento] =
     useState<FormaPagamento>("CARTAO_CREDITO");
+
+  // Assina o estoque dos produtos do carrinho em tempo real, igual à
+  // CarrinhoPage. Sem isto, o checkout só reagia a esgotamento/reposição num
+  // novo fetch (ex.: ao reabrir a página) — o banner de "esgotado"/"parcial"
+  // não aparecia ao vivo. Chamado antes dos early returns para manter a ordem
+  // dos hooks estável; carrinho vazio => array vazio => nenhuma conexão.
+  useEstoqueCarrinhoWS((itens ?? []).map((i) => i.produtoId));
 
   if (error) throw error;
   if (recuperando) return <p className="text-lg">Recuperando carrinho...</p>;

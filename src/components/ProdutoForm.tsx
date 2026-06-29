@@ -24,7 +24,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 //   disponivel: boolean;
 // }
 
-const regexImagem = /^[a-z]+\.(gif|jpg|png|bmp)$/;
+// Nome do arquivo de imagem: segmentos alfanuméricos separados por hífen ou
+// underscore, terminando numa extensão de imagem. Aceita nomes reais do
+// catálogo como "ryzen-7-5700x.png" e "rtx-4070-super-12gb.png" — a versão
+// antiga (/^[a-z]+\.(...)$/) rejeitava dígitos e hífens e travava o cadastro
+// e a edição de praticamente todos os produtos.
+const regexImagem = /^[a-z0-9]+(?:[-_][a-z0-9]+)*\.(gif|jpe?g|png|bmp)$/i;
 const schema = z.object({
   nome: z
     .string()
@@ -259,7 +264,16 @@ const ProdutoForm = () => {
                     </>
                   }
               </button>
-              <button type="button" onClick={() => inicializarForm()}
+              <button type="button" onClick={() => {
+                  // Cancelar = abandonar a edição/cadastro e voltar. Em edição,
+                  // volta para a página do produto que estava sendo editado;
+                  // em cadastro novo (sem id), volta para a página anterior.
+                  if (produtoSelecionado.id) {
+                    navigate("/produtos/" + produtoSelecionado.id);
+                  } else {
+                    navigate(-1);
+                  }
+                }}
                 className="flex justify-center items-center btn-secondary px-5 py-1.5">
                   <img src={databaseCancel} className="me-2" /> Cancelar
               </button>
